@@ -7,15 +7,12 @@ export interface PluginOptions {
 	name: string;
 	run: (client: HyprClient) => any;
 }
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const validationSchema = z
-	.object({
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		name: z.string(),
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		run: z.function(),
-	})
-	.loose();
+const validationSchema = z.object({
+	name: z.string(),
+	run: z.any().refine(val => typeof val === 'function', {
+		message: 'run must be a function',
+	}),
+});
 
 export class Plugin {
 	public options: PluginOptions;
@@ -24,16 +21,12 @@ export class Plugin {
 		public name: PluginOptions['name'],
 		public run: PluginOptions['run'],
 	) {
-		validationSchema
-			.parseAsync({ ...this })
-			.then(options => {
-				this.options = options as PluginOptions;
-
-				Plugins.register(this);
-			})
-			.catch(error => {
-				Logger.warn(typeof error.code !== 'undefined' ? error.code : '', error.message);
-				if (error.stack) Logger.trace(error.stack);
-			});
+		try {
+			this.options = validationSchema.parse({ name: this.name, run: this.run }) as PluginOptions;
+		} catch (error) {
+			Logger.warn(typeof error.code !== 'undefined' ? error.code : '', error.message);
+			if (error.stack) Logger.trace(error.stack);
+		}
+		Plugins.register(this);
 	}
 }

@@ -14,6 +14,9 @@ export class Logger implements ILogger {
 		}
 		return this.logger;
 	}
+	public setLevel(level: LogLevel) {
+		this.level = level;
+	}
 	public has(level: LogLevel): boolean {
 		return level >= this.level;
 	}

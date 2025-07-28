@@ -1,5 +1,6 @@
 #!/bin/bash
 
 rm -rf dist
-npm run build:cjs
+rm -rf tsconfig.tsbuildinfo
+npm run build
 node test/cjs/client.cjs

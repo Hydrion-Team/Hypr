@@ -10,8 +10,3 @@ package-lock.json
 tsconfig.tsbuildinfo
 dist/*.tsbuildinfo
 tsconfig.json
-tsconfig.base.json
-tsconfig.cjs.json
-tsconfig.esm.json
-
-renovate.json

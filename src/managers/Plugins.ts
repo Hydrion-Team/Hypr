@@ -11,8 +11,13 @@ export class PluginManager extends Collection<string, Plugin> {
 	public register(plugin: any): PluginManager {
 		if (plugin instanceof Plugin) {
 			if (this.has(plugin.name)) Logger.warn('Overwriting plugin', plugin.name);
+			if (!plugin.options) {
+				GlobalEvents.emit(HyprEvents.PluginRegisterError, PluginErrorCodes.InvalidPlugin);
+				return this;
+			}
+
 			this.set(plugin.name, plugin);
-			GlobalEvents.emit(HyprEvents.PluginLoaded, plugin);
+			GlobalEvents.emit(HyprEvents.PluginRegistered, plugin);
 		} else {
 			GlobalEvents.emit(HyprEvents.PluginRegisterError, PluginErrorCodes.PluginConflict);
 		}
@@ -26,15 +31,15 @@ export class PluginManager extends Collection<string, Plugin> {
 	//TODO: hyprselfbot
 	public async initiate(client: HyprClient): Promise<void> {
 		this.client = client;
-		for await (const plugin of this.values()) {
+		for  (const plugin of this.values()) {
 			await Promise.resolve(plugin.run(client))
 				.catch(error => {
-					GlobalEvents.emit(HyprEvents.PluginFailed, plugin as Plugin, error as Error);
+					GlobalEvents.emit(HyprEvents.PluginFailed, plugin, error as Error);
 					Logger.error(typeof error.code !== 'undefined' ? error.code : '', error.message);
 					if (error.stack) Logger.trace(error.stack);
 				})
 				.then(() => {
-					GlobalEvents.emit(HyprEvents.PluginLoaded, plugin as Plugin);
+					GlobalEvents.emit(HyprEvents.PluginLoaded, plugin);
 				});
 		}
 	}

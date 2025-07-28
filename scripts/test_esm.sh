@@ -1,5 +1,6 @@
 #!/bin/bash
 
 rm -rf dist
-npm run build:esm
+rm -rf tsconfig.tsbuildinfo
+npm run build
 node test/esm/client.mjs

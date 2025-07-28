@@ -1,10 +1,11 @@
-import type { BaseHyprOptions } from '../../types/base';
 import type { ClientOptions as DiscordClientOptions, IntentsBitField } from 'discord.js';
 import { Client as DiscordClient } from 'discord.js';
 import Loader from '../../utils/loader';
 import { Plugins } from '../../managers/Plugins';
 import type { ClientEvents } from 'discord.js-selfbot-v13';
 import type { EventListeners } from '../../libs/GlobalEvents';
+import type { BaseClient, BaseHyprOptions } from '../../libs/BaseClient';
+import GlobalEvents, { HyprEvents as HyprEnum  } from '../../libs/GlobalEvents';
 /**
  * Options for the HyprClient.
  * @extends {DiscordClientOptions}
@@ -34,15 +35,33 @@ export interface HyprClient<Ready extends boolean = boolean> extends DiscordClie
  */
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class HyprClient<Ready extends boolean = boolean> extends DiscordClient<Ready> implements HyprClient {
+export class HyprClient<Ready extends boolean = boolean> extends DiscordClient<Ready> implements BaseClient {
 	declare public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
+	private baseDir = process.cwd() + '/src';
 	constructor(options: ClientOptions) {
 		super({ ...options });
+		if (options.baseDir) this.baseDir = options.baseDir;
 		if (options.loadDirectories) void Loader.registerDirectories(options.loadDirectories);
+
+		for (const eventName of Object.values(HyprEnum)) {
+			GlobalEvents.on(eventName, (...args: unknown[]) => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+				return this.emit.call(this, eventName, ...args);
+			});
+		}
+
 		setImmediate(() => {
 			void (async () => {
+				if (options.loadPlugins) await Plugins.search(this.baseDir);
 				await Promise.all([Plugins.initiate(this)]);
 			})();
 		});
+	}
+	//TODO: Fix
+	isSelfbotInstance(): this is import('../../selfbot/libs/Client').SelfbotOptions {
+		return false;
+	}
+	isDiscordInstance(): this is HyprClient {
+		return true;
 	}
 }

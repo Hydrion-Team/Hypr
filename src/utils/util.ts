@@ -10,19 +10,15 @@ export class Util {
 		);
 	}
 
-	/**
-	 * The method that resolves the file for directoryLoader
-	 * @param {any} file The file that will be resolved
-	 * @param {string} fileType The file type
-	 * @returns {any}
-	 */
-	static resolveFile(file: any, fileType: string): any {
-		if (fileType === '.ts') return file.default || Object.values(file as ArrayLike<unknown>)[0];
-		if (fileType === '.js') {
-			if (this.isClass(file)) return file;
-			else return Object.values(file as ArrayLike<unknown>)[0];
+	static isRunningWithTsx(): boolean {
+		const argv1 = process.argv[1] || '';
+		return argv1.toLowerCase().includes('tsx');
+	}
+	static isRunningWithEsm(): boolean {
+		try {
+			return typeof require == 'undefined';
+		} catch {
+			return false;
 		}
-
-		return file;
 	}
 }

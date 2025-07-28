@@ -2,13 +2,12 @@
 	"name": "@hypr/framework",
 	"version": "0.0.1-alpha",
 	"description": "",
-	"main": "./dist/cjs/index.js",
-	"module": "./dist/esm/index.js",
-	"types": "./dist/types/index.d.ts",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/esm/index.js",
-			"require": "./dist/cjs/index.js"
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
 		}
 	},
 	"scripts": {
@@ -16,11 +15,9 @@
 		"test:cjs": "bash ./scripts/test_cjs.sh",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"format": "prettier --write src/**/*.ts",
+		"format": "prettier --write **.{ts,json,md}",
 		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-		"build": "bash ./scripts/build.sh",
-		"build:cjs": "tsc -p tsconfig.cjs.json",
-		"build:esm": "tsc -p tsconfig.esm.json"
+		"build": "tsc"
 	},
 	"repository": {
 		"type": "git",
@@ -47,6 +44,7 @@
 		"eslint": "^9.32.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.3",
+		"eslint-plugin-tsc": "^2.0.0",
 		"prettier": "^3.6.2",
 		"typescript": "^5.8.3",
 		"typescript-eslint": "^8.38.0"

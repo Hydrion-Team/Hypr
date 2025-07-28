@@ -1,0 +1,38 @@
+import type { Awaitable } from '../types/base';
+
+/**
+ * A valid prefix for GCommands.
+ * * `string`: for single prefix, like `'?'`.
+ * * `string[]`: an array of prefixes, like `['?', '!']`.
+ * * `null`: disabled prefix, only mention works.
+ */
+export type HyprMessagePrefix = string | string[] | null;
+
+export interface BaseHyprOptions {
+	/*
+	Load Message Commands
+	*/
+	loadMessageComands: boolean;
+	/*
+	Command prefix
+	*/
+	messagePrefix?:
+		| ((
+				message: import('discord.js').Message | import('discord.js-selfbot-v13').Message,
+		  ) => Awaitable<HyprMessagePrefix>)
+		| HyprMessagePrefix;
+	loadDirectories?: Array<string>;
+	/**
+	 * loadPlugins, it will search "plugins" folder
+	 * Or you can use Plugins.search(__dirname)
+	 * Or you can import with loadDirectories
+	 */
+	loadPlugins: boolean;
+	baseDir?: string;
+}
+
+export interface BaseClient {
+	//TODO: HyprSelfbot
+	isSelfbotInstance(): this is import('../selfbot/libs/Client').SelfbotOptions;
+	isDiscordInstance(): this is import('../discord/libs/Client').HyprClient;
+}

@@ -3,7 +3,7 @@ import markdown from "@eslint/markdown";
 import css from "@eslint/css";
 import prettierPlugin from "eslint-plugin-prettier";
 import tseslint from "typescript-eslint";
-
+import tsc from 'eslint-plugin-tsc';
 export default tseslint.config(
   {
     ignores: ["**/*.js", "**/*.cjs", "**/*.mjs", "package-lock.json", "**/*.d.ts"]
@@ -43,16 +43,17 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         project: true,
-          project: "./tsconfig.base.json",
+        project: "./tsconfig.json",
         tsconfigRootDir: import.meta.dirname
       }
     },
-      extends: [
+    extends: [
       ...tseslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
     ],
     plugins: {
-      prettier: prettierPlugin
+      prettier: prettierPlugin,
+      tsc
     },
     rules: {
       strict: ["error", "global"],
@@ -62,15 +63,18 @@ export default tseslint.config(
       "prefer-const": "error",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-redundant-type-constituents": "off",
-            "@typescript-eslint/consistent-type-imports": ["error", {
+      "@typescript-eslint/consistent-type-imports": ["error", {
         prefer: "type-imports",
         disallowTypeAnnotations: false,
         fixStyle: "separate-type-imports"
       }],
-      "@typescript-eslint/no-unsafe-call":"off",
-      "@typescript-eslint/no-unsafe-member-access":"off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-import-type-side-effects": "error",
-      "prettier/prettier": ["warn"]
+      "prettier/prettier": ["warn"],
+      'tsc/config': ['error', {
+        configFile: "tsconfig.json"
+      }]
     }
   }
 );

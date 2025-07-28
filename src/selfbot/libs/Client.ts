@@ -1,5 +1,5 @@
 import type { Client } from 'discord.js-selfbot-v13';
-import type { BaseHyprOptions } from '../../types/base';
+import type { BaseHyprOptions } from '../../libs/BaseClient';
 /**
  * Options for the HyprClient.
  * @extends {ClientOptions}

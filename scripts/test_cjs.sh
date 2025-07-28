@@ -2,4 +2,4 @@
 
 rm -rf dist
 npm run build:cjs
-npm run build:esm
+node test/cjs/client.cjs

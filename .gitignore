@@ -2,7 +2,7 @@
 #Our
 .idea/
 .vscode
-test/
+test/config.json
 dist/
 
 # Logs

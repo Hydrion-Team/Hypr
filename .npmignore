@@ -4,11 +4,14 @@ example/
 scripts/
 docs/
 package-lock.json
-.eslintignore
-.eslintrc.json
+.eslint.config.mjs
 .prettierrc.json
-.commitlintrc.json
 .github/
 tsconfig.tsbuildinfo
+dist/*.tsbuildinfo
 tsconfig.json
+tsconfig.base.json
+tsconfig.cjs.json
+tsconfig.esm.json
+
 renovate.json

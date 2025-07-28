@@ -67,7 +67,8 @@ export default tseslint.config(
         disallowTypeAnnotations: false,
         fixStyle: "separate-type-imports"
       }],
-
+      "@typescript-eslint/no-unsafe-call":"off",
+      "@typescript-eslint/no-unsafe-member-access":"off",
       "@typescript-eslint/no-import-type-side-effects": "error",
       "prettier/prettier": ["warn"]
     }

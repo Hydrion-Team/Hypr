@@ -2,8 +2,8 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist/esm",
-    "target": "es2024",
-    "moduleResolution": "node",
+    "target": "es2022",
+    "module": "nodenext",
     "resolveJsonModule": true
   }
 }

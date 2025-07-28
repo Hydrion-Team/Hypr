@@ -1,0 +1,14 @@
+src/
+test/
+example/
+scripts/
+docs/
+package-lock.json
+.eslintignore
+.eslintrc.json
+.prettierrc.json
+.commitlintrc.json
+.github/
+tsconfig.tsbuildinfo
+tsconfig.json
+renovate.json

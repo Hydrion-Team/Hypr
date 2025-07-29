@@ -1,0 +1,74 @@
+name: Release from package.json
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: tag_check
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/${{ env.VERSION }}$"; then
+            echo "Tag already exists"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "Tag does not exist"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push version & latest tags
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          # Create version tag
+          git tag $VERSION
+
+          # Force update latest tag
+          git tag -f latest
+
+          # Push both
+          git push origin $VERSION
+          git push origin -f latest
+
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Typescript
+        run: npm run build
+      - name: Run npm pack
+        run: npm pack
+
+      - name: Rename .tgz to match version
+        run: |
+          FILE=$(ls *.tgz)
+          mv "$FILE" "hypr-framework.tgz"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
+          files: hypr-framework.tgz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

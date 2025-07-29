@@ -1,8 +1,7 @@
-import type { ClientOptions as DiscordClientOptions, IntentsBitField } from 'discord.js';
+import type { ClientOptions as DiscordClientOptions, IntentsBitField, ClientEvents } from 'discord.js';
 import { Client as DiscordClient } from 'discord.js';
 import Loader from '../../utils/loader';
 import { Plugins } from '../../managers/Plugins';
-import type { ClientEvents } from 'discord.js-selfbot-v13';
 import type { EventListeners } from '../../libs/GlobalEvents';
 import { defaultOptions, type BaseClient, type BaseHyprOptions } from '../../libs/BaseClient';
 import GlobalEvents, { HyprEvents as HyprEnum } from '../../libs/GlobalEvents';

@@ -6,6 +6,7 @@ export enum HyprEvents {
 	PluginLoaded = 'PluginLoaded',
 	PluginRegisterError = 'PluginRegisterError',
 	PluginFailed = 'PluginFailed',
+	PluginLoadFinished = 'PluginLoadFinished'
 }
 
 export interface EventListeners {
@@ -13,6 +14,7 @@ export interface EventListeners {
 	PluginRegisterError: [error: PluginErrorCode];
 	PluginLoaded: [plugin: Plugin];
 	PluginFailed: [plugin: Plugin, error: Error];
+	PluginLoadFinished: [];
 }
 
 export default new EventEmitter<EventListeners>();

@@ -43,6 +43,7 @@ export class PluginManager extends Collection<string, Plugin> {
 					GlobalEvents.emit(HyprEvents.PluginLoaded, plugin);
 				});
 		}
+		GlobalEvents.emit(HyprEvents.PluginLoadFinished);
 	}
 }
 

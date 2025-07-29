@@ -31,7 +31,7 @@ export class PluginManager extends Collection<string, Plugin> {
 	//TODO: hyprselfbot
 	public async initiate(client: HyprClient): Promise<void> {
 		this.client = client;
-		for  (const plugin of this.values()) {
+		for (const plugin of this.values()) {
 			await Promise.resolve(plugin.run(client))
 				.catch(error => {
 					GlobalEvents.emit(HyprEvents.PluginFailed, plugin, error as Error);

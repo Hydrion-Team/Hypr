@@ -8,6 +8,7 @@
 		"module": "nodenext",
 		"outDir": "dist",
 		"moduleResolution": "nodenext",
+		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"declarationMap": true,
 		"emitDecoratorMetadata": true,

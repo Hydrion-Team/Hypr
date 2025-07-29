@@ -2,5 +2,6 @@
 
 rm -rf dist
 rm -rf tsconfig.tsbuildinfo
-npm run build
+tsc
+
 node test/esm/client.mjs

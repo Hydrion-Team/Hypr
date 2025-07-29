@@ -4,8 +4,9 @@ import Loader from '../../utils/loader';
 import { Plugins } from '../../managers/Plugins';
 import type { ClientEvents } from 'discord.js-selfbot-v13';
 import type { EventListeners } from '../../libs/GlobalEvents';
-import type { BaseClient, BaseHyprOptions } from '../../libs/BaseClient';
-import GlobalEvents, { HyprEvents as HyprEnum  } from '../../libs/GlobalEvents';
+import { defaultOptions, type BaseClient, type BaseHyprOptions } from '../../libs/BaseClient';
+import GlobalEvents, { HyprEvents as HyprEnum } from '../../libs/GlobalEvents';
+import { checkUpdate } from '../../utils/updater';
 /**
  * Options for the HyprClient.
  * @extends {DiscordClientOptions}
@@ -37,11 +38,8 @@ export interface HyprClient<Ready extends boolean = boolean> extends DiscordClie
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class HyprClient<Ready extends boolean = boolean> extends DiscordClient<Ready> implements BaseClient {
 	declare public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
-	private baseDir = process.cwd() + '/src';
 	constructor(options: ClientOptions) {
-		super({ ...options });
-		if (options.baseDir) this.baseDir = options.baseDir;
-		if (options.loadDirectories) void Loader.registerDirectories(options.loadDirectories);
+		super({ ...defaultOptions, ...options });
 
 		for (const eventName of Object.values(HyprEnum)) {
 			GlobalEvents.on(eventName, (...args: unknown[]) => {
@@ -49,11 +47,15 @@ export class HyprClient<Ready extends boolean = boolean> extends DiscordClient<R
 				return this.emit.call(this, eventName, ...args);
 			});
 		}
-
+		if (this.options.checkUpdate) void checkUpdate();
 		setImmediate(() => {
 			void (async () => {
-				if (options.loadPlugins) await Plugins.search(this.baseDir);
-				await Promise.all([Plugins.initiate(this)]);
+				if (this.options.loadPlugins) await Plugins.search(this.options.baseDir);
+				if (this.options.loadDirectories) await Loader.registerDirectories(this.options.loadDirectories);
+
+				await Plugins.initiate(this); //plugins first
+
+				await Promise.all([]);
 			})();
 		});
 	}

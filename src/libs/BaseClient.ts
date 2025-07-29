@@ -9,6 +9,7 @@ import type { Awaitable } from '../types/base';
 export type HyprMessagePrefix = string | string[] | null;
 
 export interface BaseHyprOptions {
+	checkUpdate?: boolean;
 	/*
 	Load Message Commands
 	*/
@@ -36,3 +37,7 @@ export interface BaseClient {
 	isSelfbotInstance(): this is import('../selfbot/libs/Client').SelfbotOptions;
 	isDiscordInstance(): this is import('../discord/libs/Client').HyprClient;
 }
+export const defaultOptions = {
+	baseDir: process.cwd() + '/src',
+	checkUpdate: true,
+} as BaseHyprOptions;

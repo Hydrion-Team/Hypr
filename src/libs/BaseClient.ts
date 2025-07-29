@@ -1,4 +1,5 @@
 import type { Awaitable } from '../types/base';
+import type { Container } from './Container';
 
 /**
  * A valid prefix for GCommands.
@@ -33,8 +34,8 @@ export interface BaseHyprOptions {
 }
 
 export interface BaseClient {
-	//TODO: HyprSelfbot
-	isSelfbotInstance(): this is import('../selfbot/libs/Client').SelfbotOptions;
+	container: Container<any>;
+	isSelfbotInstance(): this is import('../selfbot/libs/Client').HyprSelfbot;
 	isDiscordInstance(): this is import('../discord/libs/Client').HyprClient;
 }
 export const defaultOptions = {

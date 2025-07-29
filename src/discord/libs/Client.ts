@@ -7,6 +7,7 @@ import type { EventListeners } from '../../libs/GlobalEvents';
 import { defaultOptions, type BaseClient, type BaseHyprOptions } from '../../libs/BaseClient';
 import GlobalEvents, { HyprEvents as HyprEnum } from '../../libs/GlobalEvents';
 import { checkUpdate } from '../../utils/updater';
+import { Container } from '../../libs/Container';
 /**
  * Options for the HyprClient.
  * @extends {DiscordClientOptions}
@@ -59,8 +60,8 @@ export class HyprClient<Ready extends boolean = boolean> extends DiscordClient<R
 			})();
 		});
 	}
-	//TODO: Fix
-	isSelfbotInstance(): this is import('../../selfbot/libs/Client').SelfbotOptions {
+	container = new Container(this);
+	isSelfbotInstance(): this is import('../../selfbot/libs/Client').HyprSelfbot {
 		return false;
 	}
 	isDiscordInstance(): this is HyprClient {

@@ -1,8 +1,19 @@
 export const version = '[VI]{{version}}[/VI]' as string;
-// Selfbot Client
-export * from './selfbot/index';
-//Discord Client
-export * from './discord/index';
+import * as tslib from 'tslib';
+export type * from './discord/index';
+export type * from './selfbot/index';
+try {
+	require.resolve('discord.js');
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	tslib.__exportStar(require('./discord/index'), exports);
+} catch {
+}
+
+try {
+	require.resolve('discord.js-selfbot-v13');
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	tslib.__exportStar(require('./selfbot/index'), exports);
+} catch {}
 
 export * from './types/base';
 export * from './libs/BaseClient';

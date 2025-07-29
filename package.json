@@ -16,7 +16,7 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write **.{ts,json,md}",
-		"changelog": "conventional-changelog -p anguar -i CHANGELOG.md -s",
+		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"build": "bash ./scripts/build.sh"
 	},
 	"repository": {
@@ -40,7 +40,6 @@
 		"conventional-changelog": "^7.1.1",
 		"conventional-changelog-angular": "^8.0.0",
 		"discord.js": "^14.21.0",
-		"discord.js-selfbot-v13": "^3.7.0",
 		"eslint": "^9.32.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.3",

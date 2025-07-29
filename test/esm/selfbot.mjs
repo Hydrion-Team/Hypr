@@ -1,8 +1,7 @@
-import { GatewayIntentBits } from "discord.js";
-import { HyprClient, HyprEvents } from "../../dist/index.js";
+import { HyprEvents, HyprSelfbot } from "../../dist/index.js";
 import config from "../config.json"  with { type: 'json' };
 import { dirname } from "path";
-const client = new HyprClient({ intents: [GatewayIntentBits.Guilds], loadPlugins: true, baseDir: dirname(import.meta.url) });
+const client = new HyprSelfbot({ loadPlugins: true, baseDir: dirname(import.meta.url) });
 client.on("ready", () => console.log("OwO"))
 client.on(HyprEvents.PluginFailed, (error) => console.log(error))
 client.on(HyprEvents.PluginLoaded, (plugin) => console.log(plugin.name, plugin.options))

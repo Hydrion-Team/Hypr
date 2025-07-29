@@ -212,7 +212,6 @@ export class LoggerTimestamp {
 	public formatter: LoggerTimestampFormatter;
 
 	constructor(options: LoggerTimestampOptions = {}) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		this.timestamp = new Timestamp(options.pattern ?? 'YYYY-MM-DD HH:mm:ss');
 		this.utc = options.utc ?? false;
 		this.color = options.color === null ? null : new LoggerStyle(options.color);
@@ -221,9 +220,9 @@ export class LoggerTimestamp {
 
 	run(): string {
 		const date = new Date();
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
 		const result = this.utc ? this.timestamp.displayUTC(date) : this.timestamp.display(date);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
 		return this.formatter(this.color ? this.color.run(result) : result);
 	}
 }

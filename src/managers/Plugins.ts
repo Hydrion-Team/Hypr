@@ -6,8 +6,9 @@ import GlobalEvents, { HyprEvents } from '../libs/GlobalEvents';
 import { PluginErrorCodes } from '../types/ErrorCodes';
 import type { HyprClient } from '../discord/libs/Client';
 import Loader from '../utils/loader';
+import type { HyprSelfbot } from '../selfbot';
 export class PluginManager extends Collection<string, Plugin> {
-	public client: HyprClient | null;
+	public client: HyprClient | HyprSelfbot;
 	public register(plugin: any): PluginManager {
 		if (plugin instanceof Plugin) {
 			if (this.has(plugin.name)) Logger.warn('Overwriting plugin', plugin.name);
@@ -29,7 +30,7 @@ export class PluginManager extends Collection<string, Plugin> {
 		await Loader.pluginFinder(basedir);
 	}
 	//TODO: hyprselfbot
-	public async initiate(client: HyprClient): Promise<void> {
+	public async initiate(client: HyprClient | HyprSelfbot): Promise<void> {
 		this.client = client;
 		for (const plugin of this.values()) {
 			await Promise.resolve(plugin.run(client))

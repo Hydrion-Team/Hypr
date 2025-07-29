@@ -2,10 +2,10 @@ import { z } from 'zod';
 import type { HyprClient } from '../discord/libs/Client';
 import { Plugins } from '../managers/Plugins';
 import Logger from '../utils/logger/Logger';
-//TODO: hyprselfbot
+import type { HyprSelfbot } from '../selfbot';
 export interface PluginOptions {
 	name: string;
-	run: (client: HyprClient) => any;
+	run: (client: HyprClient | HyprSelfbot) => any;
 }
 const validationSchema = z.object({
 	name: z.string(),

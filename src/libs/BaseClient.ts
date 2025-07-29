@@ -35,6 +35,7 @@ export interface BaseHyprOptions {
 
 export interface BaseClient {
 	container: Container<any>;
+	waitForPluginsLoad(): Promise<void>;
 	isSelfbotInstance(): this is import('../selfbot/libs/Client').HyprSelfbot;
 	isDiscordInstance(): this is import('../discord/libs/Client').HyprClient;
 }

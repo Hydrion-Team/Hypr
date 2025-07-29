@@ -45,14 +45,12 @@ export default class Loader {
 			'index.ts',
 			'index.mjs',
 			'index.cjs',
-			'register.mjs',
-			'register.cjs',
 			'register.js',
 			'register.ts',
+			'register.mjs',
+			'register.cjs',
 			'dist/index.js',
-			'dist/register.js',
-			'dist/esm/index.js',
-			'dist/cjs/register.js',
+			'dist/register.js'
 		],
 	};
 

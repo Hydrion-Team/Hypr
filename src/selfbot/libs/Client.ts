@@ -4,17 +4,18 @@ import Loader from '../../utils/loader';
 import { Plugins } from '../../managers/Plugins';
 import type { ClientEvents } from 'discord.js-selfbot-v13';
 import type { EventListeners } from '../../libs/GlobalEvents';
+import { HyprEvents as HyprEnum } from '../../libs/GlobalEvents';
 import { defaultOptions, type BaseClient, type BaseHyprOptions } from '../../libs/BaseClient';
-import GlobalEvents, { HyprEvents as HyprEnum } from '../../libs/GlobalEvents';
 import { checkUpdate } from '../../utils/updater';
 import { Container } from '../../libs/Container';
+import type { HyprData } from '../../types/base';
 /**
  * Options for the HyprClient.
  * @extends {ClientOptions}
  */
 export interface SelfbotOptions extends DiscordClientOptions, BaseHyprOptions {}
 
-interface HyprEvents extends EventListeners, ClientEvents {}
+interface HyprEvents extends Omit<EventListeners, keyof ClientEvents>, ClientEvents {}
 export interface HyprSelfbot<Ready extends boolean = boolean> extends DiscordClient<Ready> {
 	emit<K extends keyof HyprEvents>(event: K, ...args: HyprEvents[K]): boolean;
 	on<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
@@ -40,15 +41,12 @@ export interface HyprSelfbot<Ready extends boolean = boolean> extends DiscordCli
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class HyprSelfbot<Ready extends boolean = boolean> extends DiscordClient<Ready> implements BaseClient {
 	declare public options: SelfbotOptions;
+	private data: HyprData = {
+		pluginsLoaded: false,
+	};
 	constructor(options: SelfbotOptions) {
 		super({ ...defaultOptions, ...options });
 
-		for (const eventName of Object.values(HyprEnum)) {
-			GlobalEvents.on(eventName, (...args: unknown[]) => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-				return this.emit.call(this, eventName, ...args);
-			});
-		}
 		if (this.options.checkUpdate) void checkUpdate();
 		setImmediate(() => {
 			void (async () => {
@@ -62,6 +60,17 @@ export class HyprSelfbot<Ready extends boolean = boolean> extends DiscordClient<
 		});
 	}
 	container = new Container(this);
+	waitForPluginsLoad(): Promise<void> {
+		return new Promise(resolve => {
+			if (this.data.pluginsLoaded) {
+				resolve();
+				return;
+			}
+			this.once(HyprEnum.PluginLoadFinished, () => {
+				resolve();
+			});
+		});
+	}
 	isSelfbotInstance(): this is HyprSelfbot {
 		return true;
 	}

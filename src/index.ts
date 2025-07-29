@@ -6,8 +6,7 @@ try {
 	require.resolve('discord.js');
 	// eslint-disable-next-line @typescript-eslint/no-require-imports
 	tslib.__exportStar(require('./discord/index'), exports);
-} catch {
-}
+} catch {}
 
 try {
 	require.resolve('discord.js-selfbot-v13');
@@ -15,9 +14,8 @@ try {
 	tslib.__exportStar(require('./selfbot/index'), exports);
 } catch {}
 
-export * from './types/base';
 export * from './libs/BaseClient';
-
+export * as extend from './extend';
 export { HyprEvents } from './libs/GlobalEvents';
 
 export { Plugin } from './structures/Plugin';
@@ -27,7 +25,5 @@ export * from './utils/logger/Logger';
 export { default as Logger } from './utils/logger/Logger';
 export * from './utils/logger/ILogger';
 
-export { ErrorCodes, PluginErrorCodes } from './types/ErrorCodes';
-export type { ErrorCode, PluginErrorCode } from './types/ErrorCodes';
-
+export * from './types/ErrorCodes';
 export { Util } from './utils/util';

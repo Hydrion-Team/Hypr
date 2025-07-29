@@ -56,7 +56,7 @@ export default tseslint.config(
     },
     rules: {
       strict: ["error", "global"],
-      "max-len": ["error", { code: 120, tabWidth: 2 }],
+      "max-len": ["error", { code: 150, tabWidth: 2 }],
       quotes: ["error", "single", { avoidEscape: true }],
       semi: ["error", "always"],
       "prefer-const": "error",

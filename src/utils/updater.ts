@@ -26,12 +26,11 @@ export async function checkUpdate() {
 			x.json(),
 		);
 		const lastest = fetched['name'] == realVersion;
-		if (!lastest) {
+		if (!lastest && fetched?.['assets']?.[0]?.browser_download_url) {
 			const text =
 				`\n${red('.')}` +
 				`\n${red('|')}  You are not using lastest version. Lastest version is: ${fetched['name']}` +
-				// eslint-disable-next-line max-len
-				`\n${red('|')}  To update, run "${blue(`npm i https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/releases/latest`)}"` +
+				`\n${red('|')}  To update, run "${blue(`npm i ${fetched?.['assets']?.[0]?.browser_download_url}`)}"` +
 				`\n${red('|')}  ${gray('You can disable this warning with')}` +
 				`\n${red('|')}   ${gray('new HyprClient({ checkUpdate: false })')}` +
 				`\n${red("'")}` +

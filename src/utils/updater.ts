@@ -2,7 +2,7 @@ import { blue, gray, red } from 'colorette';
 import { version } from '..';
 import { GH_OWNER, GH_REPO, name } from '../extend';
 
-export async function checkUpdate() {
+export async function checkUpdate(type: 'Client' | 'Selfbot' = 'Client'): Promise<void> {
 	if (version == '[VI]{{version}}[/VI]') return;
 	const [realVersion, from] = version.split('|');
 	if (from == 'NPM') {
@@ -15,7 +15,7 @@ export async function checkUpdate() {
 					`\n${red('|')}  You are not using lastest version. Lastest version is: ${fetched['tag_name']}` +
 					`\n${red('|')}  To update, run "${blue(`npm i ${name}@${fetched['dist-tags'].latest}`)}"` +
 					`\n${red('|')}  ${gray('You can disable this warning with')}` +
-					`\n${red('|')}   ${gray('new HyprClient({ checkUpdate: false })')}` +
+					`\n${red('|')}   ${gray(`new Rafe${type}({ checkUpdate: false })`)}` +
 					`\n${red("'")}` +
 					'\n';
 				console.log(text);
@@ -32,7 +32,7 @@ export async function checkUpdate() {
 				`\n${red('|')}  You are not using lastest version. Lastest version is: ${fetched['name']}` +
 				`\n${red('|')}  To update, run "${blue(`npm i ${fetched?.['assets']?.[0]?.browser_download_url}`)}"` +
 				`\n${red('|')}  ${gray('You can disable this warning with')}` +
-				`\n${red('|')}   ${gray('new HyprClient({ checkUpdate: false })')}` +
+				`\n${red('|')}   ${gray(`new Rafe${type}({ checkUpdate: false })`)}` +
 				`\n${red("'")}` +
 				'\n';
 			console.log(text);
@@ -42,7 +42,7 @@ export async function checkUpdate() {
 			`\n${red('.')}` +
 			`\n${red('|')}  You are using custom build` +
 			`\n${red('|')}  ${gray('You can disable this warning with')}` +
-			`\n${red('|')}   ${gray('new HyprClient({ checkUpdate: false })')}` +
+			`\n${red('|')}   ${gray(`new Rafe${type}({ checkUpdate: false })`)}` +
 			`\n${red("'")}` +
 			'\n';
 		console.log(text);

@@ -16,7 +16,7 @@ try {
 
 export * from './libs/BaseClient';
 export * as extend from './extend';
-export { HyprEvents } from './libs/GlobalEvents';
+export { RafeEvents } from './libs/GlobalEvents';
 
 export { Plugin } from './structures/Plugin';
 export { Plugins } from './managers/Plugins';

@@ -1,5 +1,5 @@
 {
-	"name": "@hypr/framework",
+	"name": "@rafe/framework",
 	"version": "0.0.1-alpha-3.1",
 	"description": "",
 	"main": "./dist/index.js",
@@ -15,23 +15,26 @@
 		"test:cjs": "bash ./scripts/test_cjs.sh",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"prepare": "bash ./scripts/prepare.sh",
+		"prepare": "husky husky-init",
 		"format": "prettier --write **.{ts,json,md}",
+		"commitlint": "commitlint --edit",
 		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
 		"build": "bash ./scripts/build.sh"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Hydrion-Team/Hypr.git"
+		"url": "git+https://github.com/Hydrion-Team/Rafe.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"bugs": {
-		"url": "https://github.com/Hydrion-Team/Hypr/issues"
+		"url": "https://github.com/Hydrion-Team/Rafe/issues"
 	},
-	"homepage": "https://github.com/Hydrion-Team/Hypr#readme",
+	"homepage": "https://github.com/Hydrion-Team/Rafe#readme",
 	"devDependencies": {
+		"@commitlint/cli": "^19.8.1",
+		"@commitlint/config-conventional": "^19.8.1",
 		"@eslint/css": "^0.10.0",
 		"@eslint/json": "^0.13.1",
 		"@eslint/markdown": "^7.1.0",
@@ -40,12 +43,14 @@
 		"@typescript-eslint/parser": "^8.38.0",
 		"conventional-changelog": "^7.1.1",
 		"conventional-changelog-angular": "^8.0.0",
+		"conventional-changelog-conventionalcommits": "^9.1.0",
 		"discord.js": "^14.21.0",
 		"discord.js-selfbot-v13": "^3.7.0",
 		"eslint": "^9.32.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.3",
 		"eslint-plugin-tsc": "^2.0.0",
+		"husky": "^9.1.7",
 		"prettier": "^3.6.2",
 		"typescript": "^5.8.3",
 		"typescript-eslint": "^8.38.0"

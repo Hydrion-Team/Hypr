@@ -9,6 +9,6 @@ export type NonAbstract<Type extends abstract new (...args: any) => any> = Type 
 	? Pick<Type, keyof Type> & (new (...args: Args) => Instance)
 	: never;
 export type EnumLike<Enum, Value> = Record<keyof Enum, Value>;
-export type HyprData = {
+export type RafeConfig = {
 	pluginsLoaded: boolean;
 };

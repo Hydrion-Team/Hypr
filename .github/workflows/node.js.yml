@@ -71,13 +71,13 @@ jobs:
       - name: Rename .tgz to match version
         run: |
           FILE=$(ls *.tgz)
-          mv "$FILE" "hypr-framework.tgz"
+          mv "$FILE" "rafe-framework.tgz"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ env.VERSION }}
           tag_name: ${{ env.VERSION }}
-          files: hypr-framework.tgz
+          files: rafe-framework.tgz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

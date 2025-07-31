@@ -11,3 +11,5 @@ tsconfig.tsbuildinfo
 dist/*.tsbuildinfo
 tsconfig.json
 AC.md
+commitlint.config.js
+.husky

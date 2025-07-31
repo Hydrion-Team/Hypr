@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import type { HyprClient } from '../discord/libs/Client';
+import type { RafeClient } from '../discord/libs/Client';
 import { Plugins } from '../managers/Plugins';
 import Logger from '../utils/logger/Logger';
-import type { HyprSelfbot } from '../selfbot';
+import type { RafeSelfbot } from '../selfbot';
 export interface PluginOptions {
 	name: string;
-	run: (client: HyprClient | HyprSelfbot) => any;
+	run: (client: RafeClient | RafeSelfbot) => any;
 }
 const validationSchema = z.object({
 	name: z.string(),

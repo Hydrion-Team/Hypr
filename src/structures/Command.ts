@@ -5,8 +5,8 @@ import { z } from 'zod';
 import { commandAndOptionNameRegexp } from '../utils/regex';
 import { localeVerification } from '../utils/verifications/LocaleVerification';
 
-import type { HyprClient } from '../discord';
-import type { HyprSelfbot } from '../selfbot';
+import type { RafeClient } from '../discord';
+import type { RafeSelfbot } from '../selfbot';
 
 export enum CommandType {
 	MESSAGE = 0,
@@ -46,7 +46,7 @@ const validationSchema = z.object({
 });
 
 export class Command<
-	ClientType extends HyprClient | HyprSelfbot = HyprClient | HyprSelfbot,
+	ClientType extends RafeClient | RafeSelfbot = RafeClient | RafeSelfbot,
 	TRegistered extends boolean = false,
 > {
 	private _registered: TRegistered;
@@ -91,7 +91,7 @@ export class Command<
 		return this._registered;
 	}
 
-	register(client: HyprClient | HyprSelfbot): Command<ClientType, true> {
+	register(client: RafeClient | RafeSelfbot): Command<ClientType, true> {
 		const registeredCommand = Object.create(this) as Command<ClientType, true>;
 		registeredCommand._registered = true;
 		registeredCommand._client = client as ClientType;

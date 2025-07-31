@@ -1,5 +1,5 @@
 import type { Plugin } from '../structures/Plugin';
-export enum HyprEvents {
+export enum RafeEvents {
 	PluginLoaded = 'PluginLoaded',
 	PluginFailed = 'PluginFailed',
 	PluginLoadFinished = 'PluginLoadFinished',

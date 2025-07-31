@@ -50,7 +50,7 @@ export default class Loader {
 			'register.mjs',
 			'register.cjs',
 			'dist/index.js',
-			'dist/register.js'
+			'dist/register.js',
 		],
 	};
 

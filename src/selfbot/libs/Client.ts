@@ -4,44 +4,32 @@ import Loader from '../../utils/loader';
 import { Plugins } from '../../managers/Plugins';
 import type { ClientEvents } from 'discord.js-selfbot-v13';
 import type { EventListeners } from '../../libs/GlobalEvents';
-import { HyprEvents as HyprEnum } from '../../libs/GlobalEvents';
-import { defaultOptions, type BaseClient, type BaseHyprOptions } from '../../libs/BaseClient';
+import { RafeEvents as RafeEnum } from '../../libs/GlobalEvents';
+import { defaultOptions, type BaseClient, type BaseOptions } from '../../libs/BaseClient';
 import { checkUpdate } from '../../utils/updater';
 import { Container } from '../../libs/Container';
-import type { HyprData } from '../../types/base';
-/**
- * Options for the HyprClient.
- * @extends {ClientOptions}
- */
-export interface SelfbotOptions extends DiscordClientOptions, BaseHyprOptions {}
+import type { RafeConfig } from '../../types/base';
+export interface SelfbotOptions extends DiscordClientOptions, BaseOptions {}
 
-interface HyprEvents extends Omit<EventListeners, keyof ClientEvents>, ClientEvents {}
-export interface HyprSelfbot<Ready extends boolean = boolean> extends DiscordClient<Ready> {
-	emit<K extends keyof HyprEvents>(event: K, ...args: HyprEvents[K]): boolean;
-	on<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
-	once<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
-	off<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
-	addListener<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
-	removeListener<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
-	removeAllListeners<K extends keyof HyprEvents>(event?: K): this;
-	listenerCount<K extends keyof HyprEvents>(event: K): number;
-	listeners<K extends keyof HyprEvents>(event: K): ((...args: HyprEvents[K]) => void)[];
-	rawListeners<K extends keyof HyprEvents>(event: K): ((...args: HyprEvents[K]) => void)[];
-	prependListener<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
-	prependOnceListener<K extends keyof HyprEvents>(event: K, listener: (...args: HyprEvents[K]) => void): this;
+interface SelfbotEvents extends Omit<EventListeners, keyof ClientEvents>, ClientEvents {}
+export interface RafeSelfbot<Ready extends boolean = boolean> extends DiscordClient<Ready> {
+	emit<K extends keyof SelfbotEvents>(event: K, ...args: SelfbotEvents[K]): boolean;
+	on<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
+	once<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
+	off<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
+	addListener<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
+	removeListener<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
+	removeAllListeners<K extends keyof SelfbotEvents>(event?: K): this;
+	listenerCount<K extends keyof SelfbotEvents>(event: K): number;
+	listeners<K extends keyof SelfbotEvents>(event: K): ((...args: SelfbotEvents[K]) => void)[];
+	rawListeners<K extends keyof SelfbotEvents>(event: K): ((...args: SelfbotEvents[K]) => void)[];
+	prependListener<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
+	prependOnceListener<K extends keyof SelfbotEvents>(event: K, listener: (...args: SelfbotEvents[K]) => void): this;
 }
-/**
- * The base {@link Client} that Hypr uses.
- *
- * @see {@link ClientOptions} for all available options for HyprClient.
- *
- * @extends {Client}
- */
-
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-export class HyprSelfbot<Ready extends boolean = boolean> extends DiscordClient<Ready> implements BaseClient {
+export class RafeSelfbot<Ready extends boolean = boolean> extends DiscordClient<Ready> implements BaseClient {
 	declare public options: SelfbotOptions;
-	private data: HyprData = {
+	private data: RafeConfig = {
 		pluginsLoaded: false,
 	};
 	constructor(options: SelfbotOptions) {
@@ -66,15 +54,15 @@ export class HyprSelfbot<Ready extends boolean = boolean> extends DiscordClient<
 				resolve();
 				return;
 			}
-			this.once(HyprEnum.PluginLoadFinished, () => {
+			this.once(RafeEnum.PluginLoadFinished, () => {
 				resolve();
 			});
 		});
 	}
-	isSelfbotInstance(): this is HyprSelfbot {
+	isSelfbotInstance(): this is RafeSelfbot {
 		return true;
 	}
-	isDiscordInstance(): this is import('../../discord/libs/Client').HyprClient {
+	isDiscordInstance(): this is import('../../discord/libs/Client').RafeClient {
 		return true;
 	}
 }

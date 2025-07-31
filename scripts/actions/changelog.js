@@ -17,10 +17,13 @@ const typeMap = {
     perf: '⚡ Performance Improvements',
     build: '🏗️ Build System',
     revert: '⏪ Reverts',
-    merge: '🔀 Merge Commits',
-    release: '🚀 Releases',
-    wip: '🚧 Work In Progress'
+    lint: '🧹 Linting',
+    pretty: '🎨 Code Formatting',
+    config: '🛠️ Configuration',
+    deps: '📦 Dependency Updates',
+    release: '🚀 Release'
 };
+
 
 
 function getCommitHash(fullHash) {
@@ -123,7 +126,7 @@ function parseCommit(commit) {
     };
 }
 
-function generateChangelog() {
+function generateChangelog(lastCommit = null) {
     const repoUrl = getRepoUrl();
     const tags = getGitTags();
     const uniqueTags = [...new Set(tags)].filter(tag =>
@@ -138,38 +141,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 `;
-    /*
-        if (uniqueTags.length > 0) {
-            const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
-            if (unreleasedCommits.length > 0) {
-                const parsedCommits = unreleasedCommits.map(parseCommit);
-                const groupedCommits = {};
-    
-                parsedCommits.forEach(commit => {
-                    const typeLabel = typeMap[commit.type] || '🔧 Chores';
-                    if (!groupedCommits[typeLabel]) {
-                        groupedCommits[typeLabel] = [];
-                    }
-                    groupedCommits[typeLabel].push(commit);
-                });
-    
-                changelog += `## Unreleased\n\n`;
-                const typeOrder = Object.values(typeMap);
-    
-                typeOrder.forEach(typeLabel => {
-                    if (groupedCommits[typeLabel]) {
-                        changelog += `### ${typeLabel}\n\n`;
-                        groupedCommits[typeLabel].forEach(commit => {
-                            const commitLink = formatCommitLink(commit.hash, repoUrl);
-                            const scopeText = commit.scope ? `**${commit.scope}:**` : '';
-                            changelog += `- ${scopeText}${commit.description}${commit.author} (${commitLink})\n`;
-                        });
-                        changelog += '\n';
-                    }
-                });
-            }
+    if (uniqueTags.length > 0 || lastCommit) {
+        const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
+        
+        // lastCommit varsa onu da ekle
+         if (unreleasedCommits.length > 0) {
+            const unr = lastCommit ? unreleasedCommits.concat(lastCommit.split('\n')) : unreleasedCommits;
+            const parsedCommits = unr.map(parseCommit);
+            const groupedCommits = {};
+
+            parsedCommits.forEach(commit => {
+                const typeLabel = typeMap[commit.type] || '🔧 Chores';
+                if (!groupedCommits[typeLabel]) {
+                    groupedCommits[typeLabel] = [];
+                }
+                groupedCommits[typeLabel].push(commit);
+            });
+
+            changelog += `## Latest\n\n`;
+            
+            const typeOrder = Object.values(typeMap);
+
+            typeOrder.forEach(typeLabel => {
+                if (groupedCommits[typeLabel]) {
+                    changelog += `### ${typeLabel}\n\n`;
+                    groupedCommits[typeLabel].forEach(commit => {
+                        const commitLink = formatCommitLink(commit.hash, repoUrl);
+                        const scopeText = commit.scope ? `**${commit.scope}:**` : '';
+                        changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
+                    });
+                    changelog += '\n';
+                }
+            });
         }
-        */
+    }
 
     for (let i = 0; i < uniqueTags.length; i++) {
         const currentTag = uniqueTags[i];
@@ -202,7 +207,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
                 groupedCommits[typeLabel].forEach(commit => {
                     const commitLink = formatCommitLink(commit.hash, repoUrl);
                     const scopeText = commit.scope ? `**${commit.scope}:**` : '';
-                    changelog += `- ${scopeText}${commit.description}${commit.author} (${commitLink})\n`;
+                    changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
                 });
                 changelog += '\n';
             }
@@ -250,7 +255,7 @@ function generateLatestChangelogWithLinks() {
             groupedCommits[typeLabel].forEach(commit => {
                 const commitLink = formatCommitLink(commit.hash, repoUrl);
                 const scopeText = commit.scope ? `**${commit.scope}:** ` : '';
-                changelog += `- ${scopeText}${commit.description}${commit.author} (${commitLink})\n`;
+                changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
             });
             changelog += '\n';
         }
@@ -274,21 +279,32 @@ exports.generateLatestChangelogWithLinks = generateLatestChangelogWithLinks;
 if (require.main === module) {
     const commitMsgFile = process.argv[2];
     if (commitMsgFile) {
-        let commitMsg = fs.readFileSync(commitMsgFile, 'utf-8');
+        const commitMsg = fs.readFileSync(commitMsgFile, 'utf-8');
         const types = Object.keys(typeMap).join('|');
         const regex = new RegExp(`^(${types})(\\(.+\\))?:\\s`);
-        const firstLine = commitMsg.split('\n')[0];
-        const typeMatch = firstLine.match(regex);
+        const lines = commitMsg.split('\n');
 
-        if (typeMatch) {
-            const type = typeMatch[1];
-            const emoji = typeMap[type].slice(0, 1) || '';
-            if (emoji && !firstLine.startsWith(emoji)) {
-                commitMsg = commitMsg.replace(/^/, emoji + ' ');
-                fs.writeFileSync(commitMsgFile, commitMsg);
+        const updatedLines = lines.map(line => {
+            const typeMatch = line.match(regex);
+            if (typeMatch) {
+                const type = typeMatch[1];
+                const emoji = typeMap[type]?.slice(0, 2) || ''; // 2 karakter slice çünkü bazı emojiler surrogate pair
+                if (emoji && !line.startsWith(emoji)) {
+                    return emoji + ' ' + line;
+                }
             }
-        }
+            return line;
+        });
 
+        const lastMsg = updatedLines.join('\n');
+        fs.writeFileSync(commitMsgFile, lastMsg);
+        console.log('✅ Commit message processed and updated with emoji!');
+        console.log(`📝 Updated commit message: ${commitMsgFile}`);
+        
+        const changelogContent = generateChangelog(lastMsg);
+        fs.writeFileSync(outputPath, changelogContent, 'utf8');
+        console.log('✅ Changelog generated successfully!');
+        console.log(`📝 Written to: ${outputPath}`);
     } else {
         const changelogContent = generateChangelog();
         fs.writeFileSync(outputPath, changelogContent, 'utf8');

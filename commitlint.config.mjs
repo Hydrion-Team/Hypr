@@ -21,7 +21,8 @@ export default {
         'pretty',
         'config',
         'deps',
-        'release'
+        'release',
+        "wip"
       ]
     ],
     'subject-case': [2, 'always', ['sentence-case']]

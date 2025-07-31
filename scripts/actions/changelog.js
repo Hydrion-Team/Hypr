@@ -21,7 +21,8 @@ const typeMap = {
     pretty: '🎨 Code Formatting',
     config: '🛠️ Configuration',
     deps: '📦 Dependency Updates',
-    release: '🚀 Release'
+    release: '🚀 Release',
+    wip: '🚧 Work In Progress'
 };
 
 
@@ -143,10 +144,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 `;
     if (uniqueTags.length > 0 || lastCommit) {
         const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
-        
-        // lastCommit varsa onu da ekle
-         if (unreleasedCommits.length > 0) {
-            const unr = lastCommit ? unreleasedCommits.concat(lastCommit.split('\n')) : unreleasedCommits;
+
+        if (unreleasedCommits.length > 0) {
+            const unr = lastCommit ? unreleasedCommits.concat(lastCommit
+                .split('\n')
+                .filter(line => !!line.trim())
+                .map(line => ({
+                    hash: 'manual',
+                    subject: line,
+                    date: new Date().toISOString().split('T')[0],
+                    authorName: 'last-commit',
+                    authorEmail: 'last-commit@example.com',
+                    body: ''
+                }))) : unreleasedCommits;
             const parsedCommits = unr.map(parseCommit);
             const groupedCommits = {};
 
@@ -159,7 +169,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             });
 
             changelog += `## Latest\n\n`;
-            
+
             const typeOrder = Object.values(typeMap);
 
             typeOrder.forEach(typeLabel => {
@@ -300,7 +310,7 @@ if (require.main === module) {
         fs.writeFileSync(commitMsgFile, lastMsg);
         console.log('✅ Commit message processed and updated with emoji!');
         console.log(`📝 Updated commit message: ${commitMsgFile}`);
-        
+
         const changelogContent = generateChangelog(lastMsg);
         fs.writeFileSync(outputPath, changelogContent, 'utf8');
         console.log('✅ Changelog generated successfully!');

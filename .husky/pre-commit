@@ -4,4 +4,4 @@ npm run build
 
 npm run format
 
-git add CHANGELOG.md
+git add .

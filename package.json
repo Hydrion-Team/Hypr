@@ -1,6 +1,6 @@
 {
 	"name": "rafe",
-	"version": "0.0.1-alpha-4",
+	"version": "0.0.1-alpha-5",
 	"description": "🚀 Modern Discord Bot Framework - A powerful and flexible framework for building Discord bots and selfbots with TypeScript support",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",

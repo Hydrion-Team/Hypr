@@ -16,8 +16,12 @@ const typeMap = {
     ci: '⚙️ Continuous Integration',
     perf: '⚡ Performance Improvements',
     build: '🏗️ Build System',
-    revert: '⏪ Reverts'
+    revert: '⏪ Reverts',
+    merge: '🔀 Merge Commits',
+    release: '🚀 Releases',
+    wip: '🚧 Work In Progress'
 };
+
 
 function getCommitHash(fullHash) {
     return fullHash.substring(0, 7);
@@ -271,14 +275,14 @@ if (require.main === module) {
     const commitMsgFile = process.argv[2];
     if (commitMsgFile) {
         let commitMsg = fs.readFileSync(commitMsgFile, 'utf-8');
-        const types = Object.keys(typeMap).join('|'); 
+        const types = Object.keys(typeMap).join('|');
         const regex = new RegExp(`^(${types})(\\(.+\\))?:\\s`);
         const firstLine = commitMsg.split('\n')[0];
         const typeMatch = firstLine.match(regex);
 
         if (typeMatch) {
             const type = typeMatch[1];
-            const emoji = typeMap[type].slice(0,1) || '';
+            const emoji = typeMap[type].slice(0, 1) || '';
             if (emoji && !firstLine.startsWith(emoji)) {
                 commitMsg = commitMsg.replace(/^/, emoji + ' ');
                 fs.writeFileSync(commitMsgFile, commitMsg);

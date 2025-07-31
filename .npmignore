@@ -1,0 +1,15 @@
+src/
+test/
+example/
+scripts/
+docs/
+package-lock.json
+eslint.config.mjs
+.prettierrc.json
+.github/
+tsconfig.tsbuildinfo
+dist/*.tsbuildinfo
+tsconfig.json
+AC.md
+commitlint.config.js
+.husky

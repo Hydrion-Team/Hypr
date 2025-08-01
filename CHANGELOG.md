@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Latest
+
+### 🐛 Bug Fixes
+
+- Action Build missing changelog by [@vrdons](https://github.com/vrdons) ([625195c](https://github.com/Hydrion-Team/Rafe/commit/625195c41950098761ab80d25087bfb45fffdb7f))
+
 ## [v0.0.1-alpha-6](https://github.com/Hydrion-Team/Rafe/compare/v0.0.1-alpha-5...v0.0.1-alpha-6) - 2025-08-01
 
 ### 🐛 Bug Fixes

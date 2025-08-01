@@ -6,7 +6,6 @@ import type { ClientEvents } from 'discord.js-selfbot-v13';
 import type { EventListeners } from '../../libs/GlobalEvents';
 import { RafeEvents as RafeEnum } from '../../libs/GlobalEvents';
 import { defaultOptions, type BaseClient, type BaseOptions } from '../../libs/BaseClient';
-import { checkUpdate } from '../../utils/updater';
 import { Container } from '../../libs/Container';
 import type { RafeConfig } from '../../types/base';
 export interface SelfbotOptions extends DiscordClientOptions, BaseOptions {}
@@ -35,7 +34,6 @@ export class RafeSelfbot<Ready extends boolean = boolean> extends DiscordClient<
   constructor(options: SelfbotOptions) {
     super({ ...defaultOptions, ...options });
 
-    if (this.options.checkUpdate) void checkUpdate();
     setImmediate(() => {
       void (async () => {
         if (this.options.loadPlugins) await Plugins.search(this.options.baseDir);

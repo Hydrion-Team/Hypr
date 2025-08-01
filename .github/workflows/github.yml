@@ -1,4 +1,4 @@
-name: 🚀 Github Release
+name: 🚀 Auto Release
 
 on:
   push:
@@ -19,7 +19,9 @@ jobs:
           node-version: '20'
       - name: 📦 Install dependecies
         run: npm ci
-      - name: 📝 Run release script
+      - name: 📝 Run github release script
         run: npm run release:git
+      - name: 📝 Run npm release script
+        run: npm run release:npm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -250,7 +250,7 @@ async function generateGitHubRelease() {
     const currentSha = await getCurrentCommitSha();
     console.log(`📍 Current commit: ${currentSha.substring(0, 7)}`);
 
-    const changelog = generateChangelog();
+    const changelog = await generateChangelog();
     const notes = `## Release Notes\n\n${changelog}`;
 
     console.log(`📍Changelog:\n${changelog}`);

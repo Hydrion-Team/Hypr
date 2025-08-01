@@ -19,7 +19,8 @@
     "format": "prettier --write \"**/*.{ts,js,mjs,cjs,json,md}\"  --ignore-path .prettierignore",
     "changelog": "node ./scripts/actions/changelog.mjs",
     "build": "node ./scripts/actions/build.mjs",
-    "release:git": "node ./scripts/actions/githubRelease.mjs"
+    "release:git": "node ./scripts/actions/githubRelease.mjs",
+    "release:npm": "node ./scripts/actions/npmRelease.mjs"
   },
   "repository": {
     "type": "git",

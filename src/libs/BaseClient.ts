@@ -10,7 +10,6 @@ import type { Container } from './Container';
 export type MessagePrefix = string | string[] | null;
 
 export interface BaseOptions {
-  checkUpdate?: boolean;
   /*
 	Load Message Commands
 	*/
@@ -37,5 +36,4 @@ export interface BaseClient {
 }
 export const defaultOptions = {
   baseDir: process.cwd() + '/src',
-  checkUpdate: true,
 } as BaseOptions;

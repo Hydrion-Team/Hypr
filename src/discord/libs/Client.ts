@@ -4,7 +4,6 @@ import Loader from '../../utils/loader';
 import { Plugins } from '../../managers/Plugins';
 import { RafeEvents as RafeEnum, type EventListeners } from '../../libs/GlobalEvents';
 import { defaultOptions, type BaseClient, type BaseOptions } from '../../libs/BaseClient';
-import { checkUpdate } from '../../utils/updater';
 import { Container } from '../../libs/Container';
 import type { RafeConfig } from '../../types/base';
 export interface ClientOptions extends BaseOptions, DiscordClientOptions {}
@@ -32,7 +31,6 @@ export class RafeClient<Ready extends boolean = boolean> extends DiscordClient<R
   };
   constructor(options: ClientOptions) {
     super({ ...defaultOptions, ...options });
-    if (this.options.checkUpdate) void checkUpdate();
     this.on(RafeEnum.PluginLoadFinished, () => {
       this.data.pluginsLoaded = true;
     });

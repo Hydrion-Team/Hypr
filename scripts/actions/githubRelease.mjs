@@ -1,4 +1,4 @@
-import { Octokit, rest } from "@octokit/action";
+import { Octokit } from "@octokit/action";
 import { generateLatestChangelogWithLinks } from "./changelog.mjs";
 import { getRepoInfo } from "../utils/github.mjs";
 

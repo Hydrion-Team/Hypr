@@ -1,9 +1,15 @@
-const packageJson = require('../../package.json');
-const tsconfigJson = require('../../tsconfig.json');
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const { getRepoUrl, getRepoInfo } = require('../utils/github');
+import { readFileSync } from 'fs';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
+import { getRepoUrl, getRepoInfo } from '../utils/github.mjs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const packageJson = JSON.parse(readFileSync(path.join(__dirname, '../../package.json'), 'utf-8'));
+const tsconfigJson = JSON.parse(readFileSync(path.join(__dirname, '../../tsconfig.json'), 'utf-8'));
 
 const outDir = path.join(process.cwd(), tsconfigJson.compilerOptions.outDir);
 const mainDir = path.join(__dirname, "..", "..");

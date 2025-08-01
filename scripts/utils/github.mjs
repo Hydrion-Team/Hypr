@@ -1,9 +1,9 @@
-const { execSync } = require("child_process");
-const { getPackageJson } = require("./file");
+import { execSync } from "child_process";
+import { getPackageJson } from "./file.mjs";
 
 
 
-exports.getRepoUrl = () => {
+export function getRepoUrl() {
     let remoteUrl = process.env.GITHUB_REPOSITORY_URL;
     try {
         remoteUrl = execSync('git config --get remote.origin.url', { encoding: 'utf8' }).trim();
@@ -14,15 +14,15 @@ exports.getRepoUrl = () => {
     }
     return remoteUrl.replace(/\.git$/, '').replace(/^git@github\.com:/, 'https://github.com/');
 }
-exports.getRepoInfo = () => {
-    const repoURL = exports.getRepoUrl();
+export function getRepoInfo() {
+    const repoURL = getRepoUrl();
     const gitMatch = repoURL.match(/github\.com[\/:]([^\/]+)\/([^\/]+)(?:\.git)?$/),
 
         owner = gitMatch[1],
         repo = gitMatch[2].replace('.git', '');
     return { owner, repo };
 }
-exports.getGitTags = () => {
+export function getGitTags() {
     try {
         const tags = execSync('git tag --sort=-version:refname', { encoding: 'utf8' })
             .trim()

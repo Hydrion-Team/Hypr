@@ -1,9 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const { getRepoUrl, getGitTags } = require('../utils/github');
+import { readFileSync, writeFileSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { getRepoUrl, getGitTags } from '../utils/github.mjs';
 
-const outputPath = path.resolve(__dirname, '../../CHANGELOG.md');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const outputPath = resolve(__dirname, '../../CHANGELOG.md');
 
 const typeMap = {
     feat: '✨ Features',
@@ -25,8 +28,6 @@ const typeMap = {
     wip: '🚧 Work In Progress'
 };
 
-
-
 function getCommitHash(fullHash) {
     return fullHash.substring(0, 7);
 }
@@ -41,6 +42,7 @@ function formatCommits(commit) {
         .map(line => line.trim())
         .filter(line => line)
 }
+
 function getCommitsBetween(from, to = 'HEAD') {
     try {
         const range = from ? `${from}..${to}` : to;
@@ -73,9 +75,6 @@ function getCommitsBetween(from, to = 'HEAD') {
 }
 
 function parseCommit(commit) {
-    const conventionalRegex = /^(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: (.+)$/u;
-    const match = commit.subject.match(conventionalRegex);
-
     const coAuthors = [];
     if (commit.body) {
         const coAuthorRegex = /Co-authored-by:\s*([^<]+)<([^>]+)>/g;
@@ -108,40 +107,48 @@ function parseCommit(commit) {
         }
     }
 
-    if (match) {
-        const [, type, scope, description] = match;
-        return {
-            type: type.replace(
-                /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|\u24C2|\uD83D[\uDC00-\uDE4F])/g,
-                ''
-            ),
-            scope,
-            description,
-            hash: commit.hash,
-            date: commit.date,
-            author: authorInfo
-        };
+    // Parse multiple conventional commits from a single commit message
+    const conventionalRegex = /(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: ([^🐛🚀✨🔧⚡📦🎨♻️✅📚💄🧹🛠️⏪🚧]+)/gu;
+    const matches = [...commit.subject.matchAll(conventionalRegex)];
+    
+    if (matches.length > 0) {
+        // Return multiple parsed commits for each conventional commit found
+        return matches.map(match => {
+            const [, type, scope, description] = match;
+            return {
+                type: type.replace(
+                    /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|\u24C2|\uD83D[\uDC00-\uDE4F])/g,
+                    ''
+                ),
+                scope,
+                description: description.trim(),
+                hash: commit.hash,
+                date: commit.date,
+                author: authorInfo
+            };
+        });
     }
 
-    return {
+    // Fallback for non-conventional commits
+    return [{
         type: 'chore',
         scope: null,
         description: commit.subject,
         hash: commit.hash,
         date: commit.date,
         author: authorInfo
-    };
+    }];
 }
 
 function generateChangelog(lastCommit = null) {
     const repoUrl = getRepoUrl();
     const tags = getGitTags();
     const lastCommitList = lastCommit ? lastCommit
-        .split('\n')
+        .split(/\r?\n/)
         .filter(line => !!line.trim())
         .map(line => ({
             hash: 'manual',
-            subject: line,
+            subject: line.trim(),
             date: new Date().toISOString().split('T')[0],
             authorName: 'last-commit',
             authorEmail: 'last-commit@example.com',
@@ -159,11 +166,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 `;
-    if (uniqueTags.length > 0) {
+    if (uniqueTags.length > 0 || lastCommit) {
         const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
         if (unreleasedCommits.length > 0) {
             const unr = unreleasedCommits.concat(lastCommitList);
-            const parsedCommits = unr.map(parseCommit);
+            const parsedCommits = unr.flatMap(parseCommit);
             const groupedCommits = {};
 
             parsedCommits.forEach(commit => {
@@ -198,7 +205,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         const commits = getCommitsBetween(previousTag, currentTag);
         if (commits.length === 0) continue;
 
-        const parsedCommits = commits.map(parseCommit);
+        const parsedCommits = commits.flatMap(parseCommit);
         const groupedCommits = {};
 
         parsedCommits.forEach(commit => {
@@ -232,72 +239,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
     return changelog.replace(/\n{3,}/g, '\n\n');
 }
-function generateLatestChangelogWithLinks() {
-    const repoUrl = getRepoUrl();
-    const tags = getGitTags();
-    const uniqueTags = [...new Set(tags)].filter(tag =>
-        tag && tag !== 'lastest' && !tag.includes('undefined')
-    );
 
-    if (uniqueTags.length === 0) return 'No tags found.';
-
-    const latestTag = uniqueTags[0];
-    const previousTag = uniqueTags[1];
-
-    const commits = getCommitsBetween(previousTag, latestTag);
-    const parsedCommits = commits.map(parseCommit);
-    const groupedCommits = {};
-
-    parsedCommits.forEach(commit => {
-        const typeLabel = typeMap[commit.type] || '🔧 Chores';
-        if (!groupedCommits[typeLabel]) {
-            groupedCommits[typeLabel] = [];
-        }
-        groupedCommits[typeLabel].push(commit);
-    });
-
-    const compareUrl = previousTag
-        ? `${repoUrl}/compare/${previousTag}...${latestTag}`
-        : `${repoUrl}/releases/tag/${latestTag}`;
-    const versionDate = parsedCommits[0]?.date || new Date().toISOString().split('T')[0];
-
-    let changelog = `## [${latestTag}](${compareUrl}) - ${versionDate}\n\n`;
-
-    const typeOrder = Object.values(typeMap);
-    typeOrder.forEach(typeLabel => {
-        if (groupedCommits[typeLabel]) {
-            changelog += `### ${typeLabel}\n\n`;
-            groupedCommits[typeLabel].forEach(commit => {
-                const commitLink = formatCommitLink(commit.hash, repoUrl);
-                const scopeText = commit.scope ? `**${commit.scope}:** ` : '';
-                changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
-            });
-            changelog += '\n';
-        }
-    });
-
-    // 🔹 Önceki versiyonlar listesi
-    changelog += `---\n\n### Previous Versions\n\n`;
-
-    for (let i = 1; i < uniqueTags.length - 1; i++) {
-        const tagA = uniqueTags[i + 1];
-        const tagB = uniqueTags[i];
-        const url = `${repoUrl}/compare/${tagA}...${tagB}`;
-        changelog += `- [${tagB}](${url})\n`;
+function hasUncommittedChanges() {
+    try {
+        const status = execSync('git status --porcelain', { encoding: 'utf8' }).trim();
+        return status.length > 0;
+    } catch {
+        return false;
     }
-
-    return changelog.replace(/\n{3,}/g, '\n\n');
 }
 
-module.exports = generateChangelog;
-exports.generateLatestChangelogWithLinks = generateLatestChangelogWithLinks;
-if (require.main === module) {
+function commitChangelogIfNeeded() {
+    try {
+        // Check if CHANGELOG.md has changes
+        const status = execSync('git status --porcelain CHANGELOG.md', { encoding: 'utf8' }).trim();
+        
+        if (status) {
+            console.log('📝 CHANGELOG.md has changes, committing...');
+            execSync('git add CHANGELOG.md', { stdio: 'inherit' });
+            execSync('git commit -m "docs: update CHANGELOG.md [skip ci]"', { stdio: 'inherit' });
+            console.log('✅ CHANGELOG.md committed successfully!');
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.error('❌ Error committing CHANGELOG.md:', error.message);
+        return false;
+    }
+}
+
+export default generateChangelog;
+
+if (import.meta.url === `file://${process.argv[1]}`) {
     const commitMsgFile = process.argv[2];
+    
     if (commitMsgFile) {
-        const commitMsg = fs.readFileSync(commitMsgFile, 'utf-8');
+        // Process commit message with emoji
+        const commitMsg = readFileSync(commitMsgFile, 'utf-8');
         const types = Object.keys(typeMap).join('|');
         const regex = new RegExp(`^(${types})(\\(.+\\))?:\\s`);
-        const lines = commitMsg.split('\n');
+        const lines = commitMsg.split(/\r?\n/);
 
         const updatedLines = lines.map(line => {
             const typeMatch = line.match(regex);
@@ -312,19 +293,28 @@ if (require.main === module) {
         });
 
         const lastMsg = updatedLines.join('\n');
-        fs.writeFileSync(commitMsgFile, lastMsg);
+        writeFileSync(commitMsgFile, lastMsg);
         console.log('✅ Commit message processed and updated with emoji!');
         console.log(`📝 Updated commit message: ${commitMsgFile}`);
 
+        // Generate changelog but don't auto-commit during commit-msg hook
+        // This prevents recursive commit issues
         const changelogContent = generateChangelog(lastMsg);
-        fs.writeFileSync(outputPath, changelogContent, 'utf8');
+        writeFileSync(outputPath, changelogContent, 'utf8');
         console.log('✅ Changelog generated successfully!');
         console.log(`📝 Written to: ${outputPath}`);
+        
+        // Note: We don't auto-commit here to avoid hook recursion
+        console.log('ℹ️  Run "npm run changelog:commit" to commit changelog changes');
+        
     } else {
+        // Manual changelog generation
         const changelogContent = generateChangelog();
-        fs.writeFileSync(outputPath, changelogContent, 'utf8');
+        writeFileSync(outputPath, changelogContent, 'utf8');
         console.log('✅ Changelog generated successfully!');
         console.log(`📝 Written to: ${outputPath}`);
+        
+        // Auto-commit when run manually
+        commitChangelogIfNeeded();
     }
-
 }

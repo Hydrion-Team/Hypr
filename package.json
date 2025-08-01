@@ -17,9 +17,10 @@
 		"lint:fix": "eslint . --fix",
 		"prepare": "node .husky/install.mjs",
 		"format": "prettier --write **.{ts,json,md}",
-		"changelog": "node ./scripts/actions/changelog.js",
-		"build": "node ./scripts/actions/build.js",
-		"release:git": "node ./scripts/actions/githubRelease.js"
+		"changelog": "node ./scripts/actions/changelog.mjs",
+		"changelog:commit": "node ./scripts/actions/changelog-commit.mjs",
+		"build": "node ./scripts/actions/build.mjs",
+		"release:git": "node ./scripts/actions/githubRelease.mjs"
 	},
 	"repository": {
 		"type": "git",
@@ -51,8 +52,6 @@
 		"@types/node": "^24.1.0",
 		"@typescript-eslint/eslint-plugin": "^8.38.0",
 		"@typescript-eslint/parser": "^8.38.0",
-		"conventional-changelog": "^7.1.1",
-		"conventional-changelog-angular": "^8.0.0",
 		"discord.js": "^14.21.0",
 		"discord.js-selfbot-v13": "^3.7.0",
 		"eslint": "^9.32.0",

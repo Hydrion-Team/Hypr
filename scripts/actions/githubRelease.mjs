@@ -1,9 +1,9 @@
-const octokit = require("@octokit/action");
-const { generateLatestChangelogWithLinks } = require("./changelog");
-const { getRepoInfo } = require("../utils/github");
+import { Octokit, rest } from "@octokit/action";
+import { generateLatestChangelogWithLinks } from "./changelog.mjs";
+import { getRepoInfo } from "../utils/github.mjs";
 
 
-const ok = new octokit.Octokit({
+const ok = new Octokit({
     auth: process.env.GITHUB_TOKEN
 });
 const info = getRepoInfo();
@@ -17,7 +17,7 @@ console.log(`Changelog:\n${changelog}`);
 
 async function checkTagExists(tagName) {
     try {
-        await octokit.rest.git.getRef({
+        await ok.rest.git.getRef({
             owner,
             repo,
             ref: `tags/${tagName}`
@@ -32,7 +32,7 @@ async function checkTagExists(tagName) {
 }
 
 async function getCurrentCommitSha() {
-    const { data: currentCommit } = await octokit.rest.repos.getCommit({
+    const { data: currentCommit } = await ok.rest.repos.getCommit({
         owner,
         repo,
         ref: 'main'
@@ -42,7 +42,7 @@ async function getCurrentCommitSha() {
 
 async function handleOldLatestTag() {
     try {
-        const { data: latestRef } = await octokit.rest.git.getRef({
+        const { data: latestRef } = await ok.rest.git.getRef({
             owner,
             repo,
             ref: 'tags/latest'
@@ -51,7 +51,7 @@ async function handleOldLatestTag() {
         const oldLatestSha = latestRef.object.sha;
 
         // Find version tag that points to the same commit
-        const { data: tags } = await octokit.rest.repos.listTags({
+        const { data: tags } = await ok.rest.repos.listTags({
             owner,
             repo
         });
@@ -66,7 +66,7 @@ async function handleOldLatestTag() {
 
         console.log(`🏷️  Creating archive tag: ${oldTagName}`);
 
-        await octokit.rest.git.createRef({
+        await ok.rest.git.createRef({
             owner,
             repo,
             ref: `refs/tags/${oldTagName}`,
@@ -84,7 +84,7 @@ async function handleOldLatestTag() {
 
 async function createVersionTag(version, sha) {
     console.log(`🏷️  Creating version tag: ${version}`);
-    await octokit.rest.git.createRef({
+    await ok.rest.git.createRef({
         owner,
         repo,
         ref: `refs/tags/${version}`,
@@ -95,7 +95,7 @@ async function updateLatestTag(sha) {
     console.log('🏷️  Creating/updating latest tag');
     try {
         // Try to update existing latest tag
-        await octokit.rest.git.updateRef({
+        await ok.rest.git.updateRef({
             owner,
             repo,
             ref: 'tags/latest',
@@ -104,7 +104,7 @@ async function updateLatestTag(sha) {
         });
     } catch (error) {
         // If latest tag doesn't exist, create it
-        await octokit.rest.git.createRef({
+        await ok.rest.git.createRef({
             owner,
             repo,
             ref: 'refs/tags/latest',
@@ -141,7 +141,7 @@ async function createRelease(version, tgzPath) {
     let body = '';
     body = notes
 
-    const { data: release } = await octokit.rest.repos.createRelease({
+    const { data: release } = await ok.rest.repos.createRelease({
         owner,
         repo,
         tag_name: version,
@@ -155,7 +155,7 @@ async function createRelease(version, tgzPath) {
     console.log('📎 Uploading release asset...');
     const tgzContent = readFileSync(tgzPath);
 
-    await octokit.rest.repos.uploadReleaseAsset({
+    await ok.rest.repos.uploadReleaseAsset({
         owner,
         repo,
         release_id: release.id,

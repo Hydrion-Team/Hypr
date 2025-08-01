@@ -1,22 +1,17 @@
 import { Octokit } from '@octokit/action';
-import { generateLatestChangelogWithLinks } from './changelog.mjs';
 import { getRepoInfo } from '../utils/github.mjs';
 import { getPackageJson } from '../utils/file.mjs';
 import path, { join } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 import { readFileSync } from 'fs';
-
+import { typeMap, formatCommitLink } from './changelog.mjs';
 const ok = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 const info = getRepoInfo();
 const { owner, repo } = info;
-const changelog = generateLatestChangelogWithLinks();
-const notes = `## Release Notes\n\n${changelog}`;
 console.log('');
-console.log(`Changelog:\n${changelog}`);
-
 let packageJson;
 let projectRoot;
 
@@ -53,44 +48,6 @@ async function getCurrentCommitSha() {
   return branch.commit.sha;
 }
 
-async function handleOldLatestTag() {
-  try {
-    const { data: latestRef } = await ok.rest.git.getRef({
-      owner,
-      repo,
-      ref: 'tags/latest',
-    });
-
-    const oldLatestSha = latestRef.object.sha;
-
-    // Find version tag that points to the same commit
-    const { data: tags } = await ok.rest.repos.listTags({
-      owner,
-      repo,
-    });
-
-    const oldVersionTag = tags.find(tag => tag.commit.sha === oldLatestSha && /^v\d+\.\d+\.\d+/.test(tag.name));
-
-    const oldVersion = oldVersionTag ? oldVersionTag.name : 'v0.0.1';
-    const oldTagName = `${oldVersion}`;
-
-    console.log(`🏷️  Creating archive tag: ${oldTagName}`);
-
-    await ok.rest.git.createRef({
-      owner,
-      repo,
-      ref: `refs/tags/${oldTagName}`,
-      sha: oldLatestSha,
-    });
-  } catch (error) {
-    if (error.status !== 404) {
-      console.warn('⚠️  Warning handling old latest tag:', error.message);
-    } else {
-      console.log('ℹ️  No previous latest tag found');
-    }
-  }
-}
-
 async function createVersionTag(version, sha) {
   console.log(`🏷️  Creating version tag: ${version}`);
   await ok.rest.git.createRef({
@@ -122,12 +79,8 @@ async function buildProject() {
   return join(projectRoot, newTgzFile);
 }
 
-async function createRelease(version, tgzPath) {
+async function createRelease(version, tgzPath, body = '') {
   console.log('🎉 Creating GitHub Release...');
-
-  // Read changelog if exists
-  let body = '';
-  body = notes;
 
   const { data: release } = await ok.rest.repos.createRelease({
     owner,
@@ -154,6 +107,120 @@ async function createRelease(version, tgzPath) {
   return release;
 }
 
+export async function generateChangelog() {
+  const { data: tags } = await ok.rest.repos.listTags({
+    owner,
+    repo,
+    per_page: 2,
+  });
+  let changelog = '';
+  if (tags.length === 0) return 'No tags found';
+
+  const latestTag = tags[0];
+  const { data: comparison } = await ok.rest.repos.compareCommitsWithBasehead({
+    owner,
+    repo,
+    basehead: `${latestTag.name}...HEAD`,
+  });
+
+  const repoUrl = `https://github.com/${owner}/${repo}`;
+
+  if (comparison.commits.length === 0) return 'No new commits since last tag';
+
+  const parsedCommits = comparison.commits.flatMap(parseCommit);
+
+  const groupedCommits = {};
+
+  parsedCommits.forEach(commit => {
+    const typeLabel = typeMap[commit.type] || '🔧 Chores';
+    if (!groupedCommits[typeLabel]) {
+      groupedCommits[typeLabel] = [];
+    }
+    groupedCommits[typeLabel].push(commit);
+  });
+
+  const typeOrder = Object.values(typeMap);
+
+  typeOrder.forEach(typeLabel => {
+    if (groupedCommits[typeLabel]) {
+      changelog += `### ${typeLabel}\n\n`;
+      groupedCommits[typeLabel].forEach(commit => {
+        const commitLink = formatCommitLink(commit.hash, repoUrl);
+        const scopeText = commit.scope ? `**${commit.scope}:**` : '';
+        changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
+      });
+      changelog += '\n';
+    }
+  });
+  return changelog;
+}
+function parseCommit(commit) {
+  const coAuthors = [];
+  const fullMessage = `${commit.commit.message}\n${commit.commit.verification?.payload || ''}`;
+
+  const coAuthorRegex = /Co-authored-by:\s*([^<]+)<([^>]+)>/g;
+  let coAuthorMatch;
+  while ((coAuthorMatch = coAuthorRegex.exec(fullMessage)) !== null) {
+    const [, name, email] = coAuthorMatch;
+    coAuthors.push({ name: name.trim(), email: email.trim() });
+  }
+
+  function formatAuthor(name, email) {
+    const isBot = email?.includes('[bot]') || name?.includes('[bot]') || name?.includes('dependabot');
+    if (isBot) {
+      const cleanName = name.replace(/\[bot\]/g, '');
+      return `[@${cleanName}[bot]](https://github.com/${cleanName})`;
+    }
+
+    let username = name;
+    if (email?.includes('@users.noreply.github.com')) {
+      username = email.split('@')[0].split('+').pop();
+    }
+    return `[@${username}](https://github.com/${username})`;
+  }
+
+  let authorInfo = '';
+  const authorName = commit.author?.login || commit.commit.author.name;
+  const authorEmail = commit.commit.author.email;
+
+  if (authorName) {
+    authorInfo = `by ${formatAuthor(authorName, authorEmail)}`;
+    if (coAuthors.length > 0) {
+      const coAuthorLinks = coAuthors.map(coAuthor => formatAuthor(coAuthor.name, coAuthor.email));
+      authorInfo += `, ${coAuthorLinks.join(', ')}`;
+    }
+  }
+
+  const subject = commit.commit.message.split('\n')[0];
+  const conventionalRegex =
+    /(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: ([^\p{Emoji_Presentation}\p{Extended_Pictographic}]+)/gu;
+  const matches = [...subject.matchAll(conventionalRegex)];
+
+  if (matches.length > 0) {
+    return matches.map(match => {
+      const [, type, scope, description] = match;
+      return {
+        type,
+        scope,
+        description: description.trim(),
+        hash: commit.sha.substring(0, 7),
+        date: commit.commit.author.date,
+        author: authorInfo,
+      };
+    });
+  }
+
+  return [
+    {
+      type: 'chore',
+      scope: null,
+      description: subject,
+      hash: commit.sha.substring(0, 7),
+      date: commit.commit.author.date,
+      author: authorInfo,
+    },
+  ];
+}
 /**
  * Main GitHub release generation function
  */
@@ -183,8 +250,10 @@ async function generateGitHubRelease() {
     const currentSha = await getCurrentCommitSha();
     console.log(`📍 Current commit: ${currentSha.substring(0, 7)}`);
 
-    // Handle old latest tag
-    await handleOldLatestTag();
+    const changelog = generateChangelog();
+    const notes = `## Release Notes\n\n${changelog}`;
+
+    console.log(`📍Changelog:\n${changelog}`);
 
     // Create version tag
     await createVersionTag(version, currentSha);
@@ -193,7 +262,7 @@ async function generateGitHubRelease() {
     const tgzPath = await buildProject();
 
     // Create GitHub release
-    const release = await createRelease(version, tgzPath);
+    const release = await createRelease(version, tgzPath, notes);
 
     console.log('✅ GitHub Release created successfully!');
     console.log(`🔗 Release URL: ${release.html_url}`);

@@ -23,7 +23,7 @@ export async function checkUpdate(type: 'Client' | 'Selfbot' = 'Client'): Promis
     } catch {}
   } else if (from == 'GH') {
     const fetched = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/releases/latest`).then(x => x.json());
-    const lastest = fetched['name'] == realVersion;
+    const lastest = fetched['name'] == `${realVersion}`;
     if (!lastest && fetched?.['assets']?.[0]?.browser_download_url) {
       const text =
         `\n${red('.')}` +

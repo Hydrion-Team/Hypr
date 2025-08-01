@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const outputPath = resolve(__dirname, '../../CHANGELOG.md');
 
-const typeMap = {
+export const typeMap = {
   feat: '✨ Features',
   fix: '🐛 Bug Fixes',
   docs: '📚 Documentation',
@@ -32,7 +32,7 @@ function getCommitHash(fullHash) {
   return fullHash.substring(0, 7);
 }
 
-function formatCommitLink(hash, repoUrl) {
+export function formatCommitLink(hash, repoUrl) {
   const shortHash = getCommitHash(hash);
   return `[${shortHash}](${repoUrl}/commit/${hash})`;
 }

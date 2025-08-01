@@ -102,7 +102,7 @@ function parseCommit(commit) {
   }
 
   const conventionalRegex =
-    /(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: ([\p{Emoji_Presentation}\p{Extended_Pictographic}]+)/gu;
+    /(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: ([^\p{Emoji_Presentation}\p{Extended_Pictographic}]+)/gu;
   const matches = [...commit.subject.matchAll(conventionalRegex)];
 
   if (matches.length > 0) {
@@ -237,46 +237,11 @@ export function generateLatestChangelogWithLinks() {
   const tags = getGitTags();
   const uniqueTags = [...new Set(tags)].filter(tag => tag && tag !== 'lastest' && !tag.includes('undefined'));
   let changelog = '';
-  if (uniqueTags.length === 0) {
-    const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
-    if (unreleasedCommits.length > 0) {
-      const unr = unreleasedCommits;
-      const parsedCommits = unr.flatMap(parseCommit);
-      const groupedCommits = {};
-
-      parsedCommits.forEach(commit => {
-        const typeLabel = typeMap[commit.type] || '🔧 Chores';
-        if (!groupedCommits[typeLabel]) {
-          groupedCommits[typeLabel] = [];
-        }
-        groupedCommits[typeLabel].push(commit);
-      });
-
-      changelog += '## Latest\n\n';
-
-      const typeOrder = Object.values(typeMap);
-
-      typeOrder.forEach(typeLabel => {
-        if (groupedCommits[typeLabel]) {
-          changelog += `### ${typeLabel}\n\n`;
-          groupedCommits[typeLabel].forEach(commit => {
-            const commitLink = formatCommitLink(commit.hash, repoUrl);
-            const scopeText = commit.scope ? `**${commit.scope}:**` : '';
-            changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
-          });
-          changelog += '\n';
-        }
-      });
-      return changelog;
-    } else {
-      return 'No tags found';
-    }
-  }
-  const latestTag = uniqueTags[0];
-  const previousTag = uniqueTags[1];
-
-  const commits = getCommitsBetween(previousTag, latestTag);
-  const parsedCommits = commits.map(parseCommit);
+  if (uniqueTags.length !== 0) return 'No tags found';
+  const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
+  if (unreleasedCommits.length <= 0) return 'No tags found';
+  const unr = unreleasedCommits;
+  const parsedCommits = unr.flatMap(parseCommit);
   const groupedCommits = {};
 
   parsedCommits.forEach(commit => {
@@ -287,35 +252,20 @@ export function generateLatestChangelogWithLinks() {
     groupedCommits[typeLabel].push(commit);
   });
 
-  const compareUrl = previousTag ? `${repoUrl}/compare/${previousTag}...${latestTag}` : `${repoUrl}/releases/tag/${latestTag}`;
-  const versionDate = parsedCommits[0]?.date || new Date().toISOString().split('T')[0];
-
-  changelog += `## [${latestTag}](${compareUrl}) - ${versionDate}\n\n`;
-
   const typeOrder = Object.values(typeMap);
+
   typeOrder.forEach(typeLabel => {
     if (groupedCommits[typeLabel]) {
       changelog += `### ${typeLabel}\n\n`;
       groupedCommits[typeLabel].forEach(commit => {
         const commitLink = formatCommitLink(commit.hash, repoUrl);
-        const scopeText = commit.scope ? `**${commit.scope}:** ` : '';
+        const scopeText = commit.scope ? `**${commit.scope}:**` : '';
         changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
       });
       changelog += '\n';
     }
   });
-
-  // 🔹 Önceki versiyonlar listesi
-  changelog += '---\n\n### Previous Versions\n\n';
-
-  for (let i = 1; i < uniqueTags.length - 1; i++) {
-    const tagA = uniqueTags[i + 1];
-    const tagB = uniqueTags[i];
-    const url = `${repoUrl}/compare/${tagA}...${tagB}`;
-    changelog += `- [${tagB}](${url})\n`;
-  }
-
-  return changelog.replace(/\n{3,}/g, '\n\n');
+  return changelog;
 }
 
 function amendCommitWithChangelog() {

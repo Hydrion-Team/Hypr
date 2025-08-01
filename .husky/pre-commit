@@ -4,4 +4,6 @@ npm run build
 
 npm run format
 
-HUSKY_SKIP_AMEND=1 npm run changelog
+npm run changelog
+
+node ./scripts/stage_all.mjs

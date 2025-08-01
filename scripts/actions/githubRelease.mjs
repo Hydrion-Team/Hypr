@@ -100,27 +100,6 @@ async function createVersionTag(version, sha) {
     sha: sha,
   });
 }
-async function updateLatestTag(sha) {
-  console.log('🏷️  Creating/updating latest tag');
-  try {
-    // Try to update existing latest tag
-    await ok.rest.git.updateRef({
-      owner,
-      repo,
-      ref: 'tags/latest',
-      sha: sha,
-      force: true,
-    });
-  } catch {
-    // If latest tag doesn't exist, create it
-    await ok.rest.git.createRef({
-      owner,
-      repo,
-      ref: 'refs/tags/latest',
-      sha: sha,
-    });
-  }
-}
 
 async function buildProject() {
   console.log('📦 Installing dependencies...');
@@ -209,9 +188,6 @@ async function generateGitHubRelease() {
 
     // Create version tag
     await createVersionTag(version, currentSha);
-
-    // Update latest tag
-    await updateLatestTag(currentSha);
 
     // Build project and create package
     const tgzPath = await buildProject();

@@ -1,74 +1,75 @@
 {
-	"name": "rafe",
-	"version": "0.0.1-alpha-5",
-	"description": "🚀 Modern Discord Bot Framework - A powerful and flexible framework for building Discord bots and selfbots with TypeScript support",
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.js"
-		}
-	},
-	"scripts": {
-		"test:esm": "bash ./scripts/test_esm.sh",
-		"test:cjs": "bash ./scripts/test_cjs.sh",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
-		"prepare": "node .husky/install.mjs",
-		"format": "prettier --write **.{ts,json,md}",
-		"changelog": "node ./scripts/actions/changelog.mjs",
-		"build": "node ./scripts/actions/build.mjs",
-		"release:git": "node ./scripts/actions/githubRelease.mjs"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Hydrion-Team/Rafe.git"
-	},
-	"keywords": [
-		"discord",
-		"bot",
-		"framework",
-		"typescript",
-		"discord.js",
-		"selfbot",
-		"plugin-system",
-		"command-handler"
-	],
-	"author": "Hydrion Team",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/Hydrion-Team/Rafe/issues"
-	},
-	"homepage": "https://github.com/Hydrion-Team/Rafe#readme",
-	"devDependencies": {
-		"@commitlint/cli": "^19.8.1",
-		"@commitlint/config-conventional": "^19.8.1",
-		"@eslint/css": "^0.10.0",
-		"@eslint/json": "^0.13.1",
-		"@eslint/markdown": "^7.1.0",
-		"@octokit/action": "^8.0.2",
-		"@types/node": "^24.1.0",
-		"@typescript-eslint/eslint-plugin": "^8.38.0",
-		"@typescript-eslint/parser": "^8.38.0",
-		"discord.js": "^14.21.0",
-		"discord.js-selfbot-v13": "^3.7.0",
-		"eslint": "^9.32.0",
-		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-prettier": "^5.5.3",
-		"eslint-plugin-tsc": "^2.0.0",
-		"husky": "^9.1.7",
-		"prettier": "^3.6.2",
-		"typescript": "^5.8.3",
-		"typescript-eslint": "^8.38.0"
-	},
-	"dependencies": {
-		"@discordjs/collection": "^2.1.1",
-		"@sapphire/timestamp": "^1.0.5",
-		"colorette": "^2.0.20",
-		"discord-api-types": "^0.38.17",
-		"tslib": "^2.8.1",
-		"util": "^0.12.5",
-		"zod": "^4.0.10"
-	}
+  "name": "rafe",
+  "version": "0.0.1-alpha-5",
+  "description": "🚀 Modern Discord Bot Framework - A powerful and flexible framework for building Discord bots and selfbots with TypeScript support",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "test:esm": "bash ./scripts/test_esm.sh",
+    "test:cjs": "bash ./scripts/test_cjs.sh",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "node .husky/install.mjs",
+    "format": "prettier --write \"**/*.{ts,js,mjs,cjs,json,md}\"  --ignore-path .prettierignore",
+    "changelog": "node ./scripts/actions/changelog.mjs",
+    "build": "node ./scripts/actions/build.mjs",
+    "release:git": "node ./scripts/actions/githubRelease.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hydrion-Team/Rafe.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "framework",
+    "typescript",
+    "discord.js",
+    "selfbot",
+    "plugin-system",
+    "command-handler"
+  ],
+  "author": "Hydrion Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hydrion-Team/Rafe/issues"
+  },
+  "homepage": "https://github.com/Hydrion-Team/Rafe#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/css": "^0.10.0",
+    "@eslint/js": "^9.32.0",
+    "@eslint/json": "^0.13.1",
+    "@eslint/markdown": "^7.1.0",
+    "@octokit/action": "^8.0.2",
+    "@types/node": "^24.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "discord.js": "^14.21.0",
+    "discord.js-selfbot-v13": "^3.7.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-tsc": "^2.0.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0"
+  },
+  "dependencies": {
+    "@discordjs/collection": "^2.1.1",
+    "@sapphire/timestamp": "^1.0.5",
+    "colorette": "^2.0.20",
+    "discord-api-types": "^0.38.17",
+    "tslib": "^2.8.1",
+    "util": "^0.12.5",
+    "zod": "^4.0.10"
+  }
 }

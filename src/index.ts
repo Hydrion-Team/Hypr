@@ -3,15 +3,15 @@ import * as tslib from 'tslib';
 export type * from './discord/index';
 export type * from './selfbot/index';
 try {
-	require.resolve('discord.js');
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	tslib.__exportStar(require('./discord/index'), exports);
+  require.resolve('discord.js');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  tslib.__exportStar(require('./discord/index'), exports);
 } catch {}
 
 try {
-	require.resolve('discord.js-selfbot-v13');
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	tslib.__exportStar(require('./selfbot/index'), exports);
+  require.resolve('discord.js-selfbot-v13');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  tslib.__exportStar(require('./selfbot/index'), exports);
 } catch {}
 
 export * from './libs/BaseClient';

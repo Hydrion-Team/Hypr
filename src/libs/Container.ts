@@ -3,6 +3,6 @@ import type { RafeSelfbot } from '../selfbot';
 import Logger from '../utils/logger/Logger';
 
 export class Container<T extends RafeClient | RafeSelfbot> {
-	constructor(public client: T) {}
-	logger = Logger;
+  constructor(public client: T) {}
+  logger = Logger;
 }

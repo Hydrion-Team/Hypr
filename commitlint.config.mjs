@@ -22,9 +22,9 @@ export default {
         'config',
         'deps',
         'release',
-        "wip"
-      ]
+        'wip',
+      ],
     ],
-    'subject-case': [2, 'always', ['sentence-case']]
-  }
+    'subject-case': [2, 'always', ['sentence-case']],
+  },
 };

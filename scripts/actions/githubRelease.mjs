@@ -27,12 +27,14 @@ function initializeConfig() {
 }
 
 async function checkTagExists(tagName) {
+  console.log(tagName);
   try {
-    await ok.rest.git.getRef({
+    const ref = await ok.rest.git.getRef({
       owner,
       repo,
       ref: `tags/${tagName}`,
     });
+    console.log(ref.data);
     return true;
   } catch (error) {
     if (error.status === 404) {

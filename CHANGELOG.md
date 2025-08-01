@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Bug Fixes
 
+- Missing fileURLToPath, path variables by [@set](https://github.com/set) ([ef5143f](https://github.com/Hydrion-Team/Rafe/commit/ef5143ff8962707bfccf9b2af9ee10f273c73287))
 - Missing build variables by [@set](https://github.com/set) ([595aea3](https://github.com/Hydrion-Team/Rafe/commit/595aea380dba4bf1836589615c64e067e3de0f58))
 - Building octokit by [@set](https://github.com/set) ([0bb7726](https://github.com/Hydrion-Team/Rafe/commit/0bb7726a84a220cd6f01406b0dbf105d44930915))
 - Changelog committing by [@Deniz](https://github.com/Deniz) ([ffc4e72](https://github.com/Hydrion-Team/Rafe/commit/ffc4e7252c8e60b991745daac97dc31b6e413874))
@@ -80,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🐛 Bug Fixes
 
 - remove deprecated husky lines from hooks by [@Deniz](https://github.com/Deniz) ([52dd761](https://github.com/Hydrion-Team/Rafe/commit/52dd761ae601760633cd5299b2d56da042d22672))
-- **run:**changelog fix(core): importing feat(selfbot): client by [@vrdons](https://github.com/vrdons) ([4437f46](https://github.com/Hydrion-Team/Rafe/commit/4437f46e63456084ed1d57996e4a5f20b54306d7))
+- **run:** changelog fix(core): importing feat(selfbot): client by [@vrdons](https://github.com/vrdons) ([4437f46](https://github.com/Hydrion-Team/Rafe/commit/4437f46e63456084ed1d57996e4a5f20b54306d7))
 
 ### ♻️ Code Refactoring
 

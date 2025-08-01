@@ -2,8 +2,10 @@ import { Octokit } from "@octokit/action";
 import { generateLatestChangelogWithLinks } from "./changelog.mjs";
 import { getRepoInfo } from "../utils/github.mjs";
 import { getPackageJson } from "../utils/file.mjs";
-import path from "path";
+import path, { join } from "path";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
+import { readFileSync } from "fs";
 
 
 const ok = new Octokit({
@@ -42,12 +44,12 @@ async function checkTagExists(tagName) {
 }
 
 async function getCurrentCommitSha() {
-    const { data: currentCommit } = await ok.rest.repos.getCommit({
+    const { data: branch } = await ok.rest.repos.getBranch({
         owner,
         repo,
-        ref: 'main'
+        branch: 'master'
     });
-    return currentCommit.sha;
+    return branch.commit.sha;
 }
 
 async function handleOldLatestTag() {

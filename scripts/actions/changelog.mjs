@@ -229,7 +229,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
                 changelog += `### ${typeLabel}\n\n`;
                 groupedCommits[typeLabel].forEach(commit => {
                     const commitLink = formatCommitLink(commit.hash, repoUrl);
-                    const scopeText = commit.scope ? `**${commit.scope}:**` : '';
+                    const scopeText = commit.scope ? `**${commit.scope}:** ` : '';
                     changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
                 });
                 changelog += '\n';

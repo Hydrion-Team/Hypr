@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Bug Fixes
 
+- Building octokit by [@set](https://github.com/set) ([0bb7726](https://github.com/Hydrion-Team/Rafe/commit/0bb7726a84a220cd6f01406b0dbf105d44930915))
 - Changelog committing by [@Deniz](https://github.com/Deniz) ([ffc4e72](https://github.com/Hydrion-Team/Rafe/commit/ffc4e7252c8e60b991745daac97dc31b6e413874))
 - changelog committing by [@set](https://github.com/set) ([8d1ef19](https://github.com/Hydrion-Team/Rafe/commit/8d1ef192aafdcc00f92f0e7a149561676dbe1340))
 - Workflow fails by [@Deniz](https://github.com/Deniz) ([405bc47](https://github.com/Hydrion-Team/Rafe/commit/405bc47716a47a10c8b3ff1ccf749d596763f80c))

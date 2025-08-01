@@ -18,7 +18,6 @@
 		"prepare": "node .husky/install.mjs",
 		"format": "prettier --write **.{ts,json,md}",
 		"changelog": "node ./scripts/actions/changelog.mjs",
-		"changelog:commit": "node ./scripts/actions/changelog-commit.mjs",
 		"build": "node ./scripts/actions/build.mjs",
 		"release:git": "node ./scripts/actions/githubRelease.mjs"
 	},

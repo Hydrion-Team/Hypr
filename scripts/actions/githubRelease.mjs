@@ -1,6 +1,7 @@
 import { Octokit } from "@octokit/action";
 import { generateLatestChangelogWithLinks } from "./changelog.mjs";
 import { getRepoInfo } from "../utils/github.mjs";
+import { getPackageJson } from "../utils/file.mjs";
 
 
 const ok = new Octokit({
@@ -13,7 +14,14 @@ const notes = `## Release Notes\n\n${changelog}`;
 console.log("");
 console.log(`Changelog:\n${changelog}`);
 
+let packageJson;
+let projectRoot;
 
+function initializeConfig() {
+    const __filename = fileURLToPath(import.meta.url);
+    projectRoot = path.resolve(path.dirname(__filename), '..', "");
+    packageJson = getPackageJson()
+}
 
 async function checkTagExists(tagName) {
     try {

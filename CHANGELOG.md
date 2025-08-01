@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Latest
 
+### ✨ Features
+
+- Added npm  publisher by [@vrdons](https://github.com/vrdons) ([749c7c8](https://github.com/Hydrion-Team/Rafe/commit/749c7c87bb1425a6cf3cc7823643387c9f4f5793))
+
 ### 🐛 Bug Fixes
 
 - Action Build missing changelog by [@vrdons](https://github.com/vrdons) ([625195c](https://github.com/Hydrion-Team/Rafe/commit/625195c41950098761ab80d25087bfb45fffdb7f))
+
+### 🔧 Chores
+
+- No need for updater by [@vrdons](https://github.com/vrdons) ([749c7c8](https://github.com/Hydrion-Team/Rafe/commit/749c7c87bb1425a6cf3cc7823643387c9f4f5793))
 
 ## [v0.0.1-alpha-6](https://github.com/Hydrion-Team/Rafe/compare/v0.0.1-alpha-5...v0.0.1-alpha-6) - 2025-08-01
 

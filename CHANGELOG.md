@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Bug Fixes
 
+- Lastest changelog by [@vrdons](https://github.com/vrdons) ([aa3b979](https://github.com/Hydrion-Team/Rafe/commit/aa3b9799e477b0c248b99af65df5e6648f58b00c))
 - Changelog by [@vrdons](https://github.com/vrdons), [@fhyrox](https://github.com/fhyrox) ([8183ee1](https://github.com/Hydrion-Team/Rafe/commit/8183ee175ddceab168d18e75b021b05a6d8810df))
 - No changelog in releases by [@--replace-all](https://github.com/--replace-all) ([aaba5df](https://github.com/Hydrion-Team/Rafe/commit/aaba5dfc9958ea804ccf0aa7d49dde6ef3f1971c))
 

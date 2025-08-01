@@ -7,14 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Latest
 
-### 🔧 Chores
+### ✨ Features
 
-- ✅ test: Github Releases 🐛 fix(test): Pre-push changelog 🐛 fix: First lined emoji by [@Deniz](https://github.com/Deniz) ([875b5bb](https://github.com/Hydrion-Team/Rafe/commit/875b5bb9e795faa76485cde4b6f48dd882a0c339))
-- ⏪ revert: Intital commit by [@Deniz](https://github.com/Deniz) ([bb73e68](https://github.com/Hydrion-Team/Rafe/commit/bb73e6846a978d37abf388fbe9333e4c84064d6c))
-- 🐛 fix: Workflow branch by [@last-commit](https://github.com/last-commit) ([manual](https://github.com/Hydrion-Team/Rafe/commit/manual))
-- ⚡ perf: Husky pre-commit by [@last-commit](https://github.com/last-commit) ([manual](https://github.com/Hydrion-Team/Rafe/commit/manual))
-- Lastest changelog fix by [@last-commit](https://github.com/last-commit) ([manual](https://github.com/Hydrion-Team/Rafe/commit/manual))
-- 📦 deps(remove): conventional-changelog, conventional-changelog-angular by [@last-commit](https://github.com/last-commit) ([manual](https://github.com/Hydrion-Team/Rafe/commit/manual))
+- UWU by [@last-commit](https://github.com/last-commit) ([manual](https://github.com/Hydrion-Team/Rafe/commit/manual))
+
+### 🐛 Bug Fixes
+
+- Workflow branch ⚡ perf: Husky pre-commit wip: Lastest changelog fix 📦 deps(remove): conventional-changelog, conventional-changelog-angular by [@Deniz](https://github.com/Deniz) ([0f7ced2](https://github.com/Hydrion-Team/Rafe/commit/0f7ced2c4b5e01de097e9c008af8f7cd60d54aa4))
+- Yeah by [@last-commit](https://github.com/last-commit) ([manual](https://github.com/Hydrion-Team/Rafe/commit/manual))
+
+### ✅ Tests
+
+- Github Releases 🐛 fix(test): Pre-push changelog 🐛 fix: First lined emoji by [@Deniz](https://github.com/Deniz) ([875b5bb](https://github.com/Hydrion-Team/Rafe/commit/875b5bb9e795faa76485cde4b6f48dd882a0c339))
+
+### ⏪ Reverts
+
+- Intital commit by [@Deniz](https://github.com/Deniz) ([bb73e68](https://github.com/Hydrion-Team/Rafe/commit/bb73e6846a978d37abf388fbe9333e4c84064d6c))
+
+### 📦 Dependency Updates
+
+- **add:**@octokit/action revert(changelog):wip 🚧 wip: git stashes by [@Deniz](https://github.com/Deniz) ([c1ca625](https://github.com/Hydrion-Team/Rafe/commit/c1ca6256a3a95b936f41fb676d5e8e5a9b6b6898))
 
 ## [v0.0.1-alpha-4](https://github.com/Hydrion-Team/Rafe/compare/v0.0.1-alpha-3.1...v0.0.1-alpha-4) - 2025-07-31
 

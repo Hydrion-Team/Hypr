@@ -36,7 +36,11 @@ function formatCommitLink(hash, repoUrl) {
     return `[${shortHash}](${repoUrl}/commit/${hash})`;
 }
 
-
+function formatCommits(commit) {
+    return commit.split('\n')
+        .map(line => line.trim())
+        .filter(line => line)
+}
 function getCommitsBetween(from, to = 'HEAD') {
     try {
         const range = from ? `${from}..${to}` : to;
@@ -62,15 +66,14 @@ function getCommitsBetween(from, to = 'HEAD') {
                 return { ...commit, body: '' };
             }
         });
-
-        return commitsWithBodies;
+        return commitsWithBodies
     } catch {
         return [];
     }
 }
 
 function parseCommit(commit) {
-    const conventionalRegex = /^(\w+)(?:\(([^)]+)\))?: (.+)$/;
+    const conventionalRegex = /^(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: (.+)$/u;
     const match = commit.subject.match(conventionalRegex);
 
     const coAuthors = [];
@@ -108,7 +111,10 @@ function parseCommit(commit) {
     if (match) {
         const [, type, scope, description] = match;
         return {
-            type,
+            type: type.replace(
+                /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|\u24C2|\uD83D[\uDC00-\uDE4F])/g,
+                ''
+            ),
             scope,
             description,
             hash: commit.hash,
@@ -130,6 +136,17 @@ function parseCommit(commit) {
 function generateChangelog(lastCommit = null) {
     const repoUrl = getRepoUrl();
     const tags = getGitTags();
+    const lastCommitList = lastCommit ? lastCommit
+        .split('\n')
+        .filter(line => !!line.trim())
+        .map(line => ({
+            hash: 'manual',
+            subject: line,
+            date: new Date().toISOString().split('T')[0],
+            authorName: 'last-commit',
+            authorEmail: 'last-commit@example.com',
+            body: ''
+        })) : []
     const uniqueTags = [...new Set(tags)].filter(tag =>
         tag && tag !== 'lastest' && !tag.includes('undefined')
     );
@@ -142,21 +159,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 `;
-    if (uniqueTags.length > 0 || lastCommit) {
+    if (uniqueTags.length > 0) {
         const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
-
         if (unreleasedCommits.length > 0) {
-            const unr = lastCommit ? unreleasedCommits.concat(lastCommit
-                .split('\n')
-                .filter(line => !!line.trim())
-                .map(line => ({
-                    hash: 'manual',
-                    subject: line,
-                    date: new Date().toISOString().split('T')[0],
-                    authorName: 'last-commit',
-                    authorEmail: 'last-commit@example.com',
-                    body: ''
-                }))) : unreleasedCommits;
+            const unr = unreleasedCommits.concat(lastCommitList);
             const parsedCommits = unr.map(parseCommit);
             const groupedCommits = {};
 
@@ -238,7 +244,6 @@ function generateLatestChangelogWithLinks() {
     const latestTag = uniqueTags[0];
     const previousTag = uniqueTags[1];
 
-    // 🔹 Son sürüm changelog'u
     const commits = getCommitsBetween(previousTag, latestTag);
     const parsedCommits = commits.map(parseCommit);
     const groupedCommits = {};
@@ -298,7 +303,7 @@ if (require.main === module) {
             const typeMatch = line.match(regex);
             if (typeMatch) {
                 const type = typeMatch[1];
-                const emoji = typeMap[type]?.slice(0, 2) || ''; // 2 karakter slice çünkü bazı emojiler surrogate pair
+                const emoji = typeMap[type]?.slice(0, 2) || '';
                 if (emoji && !line.startsWith(emoji)) {
                     return emoji + ' ' + line;
                 }

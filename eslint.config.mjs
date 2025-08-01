@@ -6,7 +6,7 @@ import tseslint from "typescript-eslint";
 import tsc from 'eslint-plugin-tsc';
 export default tseslint.config(
   {
-    ignores: ["**/*.js", "**/*.cjs", "**/*.mjs", "package-lock.json", "**/*.d.ts"]
+    ignores: ["package-lock.json", "**/*.d.ts", "dist/**"]
   },
   {
     files: ["**/*.json"],

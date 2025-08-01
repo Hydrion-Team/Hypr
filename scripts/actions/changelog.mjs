@@ -110,7 +110,7 @@ function parseCommit(commit) {
     // Parse multiple conventional commits from a single commit message
     const conventionalRegex = /(?:[\p{Emoji_Presentation}\p{Extended_Pictographic}]+\s*)?(\w+)(?:\(([^)]+)\))?: ([^🐛🚀✨🔧⚡📦🎨♻️✅📚💄🧹🛠️⏪🚧]+)/gu;
     const matches = [...commit.subject.matchAll(conventionalRegex)];
-    
+
     if (matches.length > 0) {
         // Return multiple parsed commits for each conventional commit found
         return matches.map(match => {
@@ -240,39 +240,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     return changelog.replace(/\n{3,}/g, '\n\n');
 }
 
-function hasUncommittedChanges() {
-    try {
-        const status = execSync('git status --porcelain', { encoding: 'utf8' }).trim();
-        return status.length > 0;
-    } catch {
-        return false;
+export default generateChangelog;
+export
+    function generateLatestChangelogWithLinks() {
+    const repoUrl = getRepoUrl();
+    const tags = getGitTags();
+    const uniqueTags = [...new Set(tags)].filter(tag =>
+        tag && tag !== 'lastest' && !tag.includes('undefined')
+    );
+
+    if (uniqueTags.length === 0) return 'No tags found.';
+
+    const latestTag = uniqueTags[0];
+    const previousTag = uniqueTags[1];
+
+    const commits = getCommitsBetween(previousTag, latestTag);
+    const parsedCommits = commits.map(parseCommit);
+    const groupedCommits = {};
+
+    parsedCommits.forEach(commit => {
+        const typeLabel = typeMap[commit.type] || '🔧 Chores';
+        if (!groupedCommits[typeLabel]) {
+            groupedCommits[typeLabel] = [];
+        }
+        groupedCommits[typeLabel].push(commit);
+    });
+
+    const compareUrl = previousTag
+        ? `${repoUrl}/compare/${previousTag}...${latestTag}`
+        : `${repoUrl}/releases/tag/${latestTag}`;
+    const versionDate = parsedCommits[0]?.date || new Date().toISOString().split('T')[0];
+
+    let changelog = `## [${latestTag}](${compareUrl}) - ${versionDate}\n\n`;
+
+    const typeOrder = Object.values(typeMap);
+    typeOrder.forEach(typeLabel => {
+        if (groupedCommits[typeLabel]) {
+            changelog += `### ${typeLabel}\n\n`;
+            groupedCommits[typeLabel].forEach(commit => {
+                const commitLink = formatCommitLink(commit.hash, repoUrl);
+                const scopeText = commit.scope ? `**${commit.scope}:** ` : '';
+                changelog += `- ${scopeText}${commit.description} ${commit.author} (${commitLink})\n`;
+            });
+            changelog += '\n';
+        }
+    });
+
+    // 🔹 Önceki versiyonlar listesi
+    changelog += `---\n\n### Previous Versions\n\n`;
+
+    for (let i = 1; i < uniqueTags.length - 1; i++) {
+        const tagA = uniqueTags[i + 1];
+        const tagB = uniqueTags[i];
+        const url = `${repoUrl}/compare/${tagA}...${tagB}`;
+        changelog += `- [${tagB}](${url})\n`;
     }
+
+    return changelog.replace(/\n{3,}/g, '\n\n');
 }
 
-function commitChangelogIfNeeded() {
+function amendCommitWithChangelog() {
     try {
         // Check if CHANGELOG.md has changes
         const status = execSync('git status --porcelain CHANGELOG.md', { encoding: 'utf8' }).trim();
-        
+
         if (status) {
-            console.log('📝 CHANGELOG.md has changes, committing...');
+            console.log('📝 CHANGELOG.md has changes, amending to current commit...');
             execSync('git add CHANGELOG.md', { stdio: 'inherit' });
-            execSync('git commit -m "docs: update CHANGELOG.md [skip ci]"', { stdio: 'inherit' });
-            console.log('✅ CHANGELOG.md committed successfully!');
+           // execSync('git commit --amend --no-edit', { stdio: 'inherit', env: { ...process.env, HUSKY_SKIP_AMEND: "1" } });
+            console.log('✅ CHANGELOG.md added to current commit successfully!');
             return true;
+        } else {
+            console.log('ℹ️  No changes in CHANGELOG.md to amend');
+            return false;
         }
-        return false;
     } catch (error) {
-        console.error('❌ Error committing CHANGELOG.md:', error.message);
+        console.error('❌ Error amending CHANGELOG.md:', error.message);
         return false;
     }
 }
 
-export default generateChangelog;
-
 if (import.meta.url === `file://${process.argv[1]}`) {
     const commitMsgFile = process.argv[2];
-    
+
     if (commitMsgFile) {
         // Process commit message with emoji
         const commitMsg = readFileSync(commitMsgFile, 'utf-8');
@@ -299,22 +349,18 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
         // Generate changelog but don't auto-commit during commit-msg hook
         // This prevents recursive commit issues
-        const changelogContent = generateChangelog(lastMsg);
-        writeFileSync(outputPath, changelogContent, 'utf8');
-        console.log('✅ Changelog generated successfully!');
-        console.log(`📝 Written to: ${outputPath}`);
-        
-        // Note: We don't auto-commit here to avoid hook recursion
-        console.log('ℹ️  Run "npm run changelog:commit" to commit changelog changes');
-        
+        //     const changelogContent = generateChangelog(lastMsg);
+        //     writeFileSync(outputPath, changelogContent, 'utf8');
+        //     console.log('✅ Changelog generated successfully!');
+        //     console.log(`📝 Written to: ${outputPath}`);
+
+
     } else {
         // Manual changelog generation
         const changelogContent = generateChangelog();
         writeFileSync(outputPath, changelogContent, 'utf8');
         console.log('✅ Changelog generated successfully!');
         console.log(`📝 Written to: ${outputPath}`);
-        
-        // Auto-commit when run manually
-        commitChangelogIfNeeded();
+        amendCommitWithChangelog()
     }
 }

@@ -9,7 +9,7 @@ function commitChangelogIfNeeded() {
         if (status) {
             console.log('📝 CHANGELOG.md has changes, committing...');
             execSync('git add CHANGELOG.md', { stdio: 'inherit' });
-            execSync('git commit -m "docs: update CHANGELOG.md [skip ci]"', { stdio: 'inherit' });
+            execSync('git commit -m', { stdio: 'inherit' });
             console.log('✅ CHANGELOG.md committed successfully!');
             return true;
         } else {

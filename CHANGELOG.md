@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🐛 Bug Fixes
 
-- Workflow fails by [@Deniz](https://github.com/Deniz) ([405bc47](https://github.com/Hydrion-Team/Rafe/commit/405bc47716a47a10c8b3ff1ccf749d596763f80c))
+- Changelog committing by [@Deniz](https://github.com/Deniz) ([3b1cf69](https://github.com/Hydrion-Team/Rafe/commit/3b1cf69b23ea786c93c251f3f87695d6e70bbdca))
 - Workflow branch by [@Deniz](https://github.com/Deniz) ([0f7ced2](https://github.com/Hydrion-Team/Rafe/commit/0f7ced2c4b5e01de097e9c008af8f7cd60d54aa4))
 - **test:**Pre-push changelog by [@Deniz](https://github.com/Deniz) ([875b5bb](https://github.com/Hydrion-Team/Rafe/commit/875b5bb9e795faa76485cde4b6f48dd882a0c339))
 - First lined emoji by [@Deniz](https://github.com/Deniz) ([875b5bb](https://github.com/Hydrion-Team/Rafe/commit/875b5bb9e795faa76485cde4b6f48dd882a0c339))
+
+### ♻️ Code Refactoring
+
+- CommonJS >> Esm by [@Deniz](https://github.com/Deniz) ([3b1cf69](https://github.com/Hydrion-Team/Rafe/commit/3b1cf69b23ea786c93c251f3f87695d6e70bbdca))
 
 ### ✅ Tests
 
@@ -90,3 +94,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - init file by [@vrdons](https://github.com/vrdons) ([78c5b2d](https://github.com/Hydrion-Team/Rafe/commit/78c5b2d56f9b1a8179b93d86577ff99d8b7c93d2))
 - init by [@Hydradevx](https://github.com/Hydradevx) ([100357d](https://github.com/Hydrion-Team/Rafe/commit/100357df160bb0002a005c6bc04ebb80667356e9))
 - first commit by [@Hydradevx](https://github.com/Hydradevx) ([485dd9e](https://github.com/Hydrion-Team/Rafe/commit/485dd9e65eabed94f12c15c764f9e10b7b094168))
+

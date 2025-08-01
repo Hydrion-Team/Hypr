@@ -2,6 +2,8 @@ import { Octokit } from "@octokit/action";
 import { generateLatestChangelogWithLinks } from "./changelog.mjs";
 import { getRepoInfo } from "../utils/github.mjs";
 import { getPackageJson } from "../utils/file.mjs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 
 const ok = new Octokit({

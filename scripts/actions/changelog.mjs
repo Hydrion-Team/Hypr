@@ -110,7 +110,7 @@ function parseCommit(commit) {
     return matches.map(match => {
       const [, type, scope, description] = match;
       return {
-        type: type.replace(/([\p{Emoji_Presentation}\p{Extended_Pictographic}])/g, ''),
+        type: type,
         scope,
         description: description.trim(),
         hash: commit.hash,
@@ -235,11 +235,11 @@ export default generateChangelog;
 export function generateLatestChangelogWithLinks() {
   const repoUrl = getRepoUrl();
   const tags = getGitTags();
-  const uniqueTags = [...new Set(tags)].filter(tag => tag && tag !== 'lastest' && !tag.includes('undefined'));
+  const uniqueTags = [...new Set(tags)].filter(tag => !tag.includes('undefined'));
   let changelog = '';
-  if (uniqueTags.length !== 0) return 'No tags found';
+  if (uniqueTags.length == 0) return 'No tags found';
   const unreleasedCommits = getCommitsBetween(uniqueTags[0]);
-  if (unreleasedCommits.length <= 0) return 'No tags found';
+  if (unreleasedCommits.length == 0) return 'No tags found';
   const unr = unreleasedCommits;
   const parsedCommits = unr.flatMap(parseCommit);
   const groupedCommits = {};
